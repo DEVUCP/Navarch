@@ -1,4 +1,4 @@
-server/
+server/*
 
 # Node.js
 node_modules/
@@ -56,3 +56,5 @@ jspm_packages/
 
 # Windows
 Thumbs.db
+
+*.jar
