@@ -1,0 +1,21 @@
+.scrollableDropdown {
+  max-height: 200px; /* Set the maximum height for the dropdown */
+  overflow-y: auto; /* Enable vertical scrolling */
+  border: 1px solid #ccc; /* Optional: Add a border for better visibility */
+  border-radius: 4px; /* Optional: Add rounded corners */
+}
+
+.dropdownItem {
+  padding: 8px 16px; /* Add padding to dropdown items */
+  cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+.dropdownItem:hover {
+    background-color: #f8f9fa; /* Light gray background on hover */
+    color: #000; /* Change text color on hover */
+  }
+.dropdownItem:active {
+    background-color: #198754; /* Light gray background on hover */
+    color: white; /* Change text color on hover */
+  }
+  
