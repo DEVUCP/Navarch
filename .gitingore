@@ -1,7 +1,8 @@
 server/*
 
 # Node.js
-node_modules/
+back-end/node_modules/
+front-end/node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
