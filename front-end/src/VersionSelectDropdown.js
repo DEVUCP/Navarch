@@ -53,7 +53,7 @@ function VersionSelectDropdown(){
 
 async function downloadServerFiles(version) {
     try{
-        const response = await fetch(`http://localhost:3001/download/${version}`)
+        const response = await fetch(`http://localhost:3001/server/download/${version}`)
     }
     catch(error){
         console.error("no...")
