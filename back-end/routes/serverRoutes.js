@@ -12,6 +12,15 @@ router.get('/download/:version', async (req, res) => {
     }
 });
 
+router.get('/files/check-exist', (req, res) => {
+    try{
+        res.status(200).send(Boolean(serverUtils.doesServerJarAlreadyExist()) ? "Server files already present" : "No server files present");
+    }
+    catch(error){
+        res.status(500).send("Internal Server error while checking files");
+    }
+})
+
 // Route to check if the server is running
 router.get('/check-server', async (req, res) => {
     try {
