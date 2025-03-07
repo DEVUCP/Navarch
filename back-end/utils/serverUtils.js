@@ -137,6 +137,10 @@ async function fetchLatestBuild(version) {
     return jsonBuildData.builds.at(-1).build;
 }
 
+async function doesServerJarAlreadyExist() {
+    return fs.existsSync("../server/server.jar");
+}
+
 module.exports = {
     isServerOn,
     getStrayServerInstance,
@@ -144,4 +148,5 @@ module.exports = {
     startServer,
     downloadServerFiles,
     fetchLatestBuild,
+    doesServerJarAlreadyExist,
 };
