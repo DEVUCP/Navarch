@@ -92,6 +92,16 @@ async function getStrayServerInstance() {
     });
 }
 
+// Express route to check if the server is running
+app.get('/check-server', async (req, res) => {
+    try {
+        res.status(200).send(await isServerOn());
+
+    } catch (error) {
+        res.status(500).send(`Error checking server: ${error}`);
+    }
+});
+
 
 
 async function killStrayServerInstance(){
