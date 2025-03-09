@@ -25,7 +25,7 @@
         return(<button 
             type="button" 
             onClick={startStopServer} 
-            className={"btn " + "btn-"+ (!serverStatus ? "success" : "danger") +" w-100"} 
+            className={"btn btn-lg " + "btn-"+ (!serverStatus ? "success" : "danger") +" w-100"} 
             id="start-stop-btn">
                 {!serverStatus ? "Start " : "Stop " +"Server"}
             </button>
