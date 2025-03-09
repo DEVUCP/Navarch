@@ -1,18 +1,27 @@
 const express = require('express');
 const router = express.Router();
 const serverUtils = require('../utils/serverUtils');
+const { Sema } = require('async-sema');
 
 // Route to download server files
+
+const Downloadsemaphore = new Sema(1);
+
 router.get('/download/:version', async (req, res) => {
+    await Downloadsemaphore.acquire();
+    
     try {
         await serverUtils.downloadServerFiles(req.params.version);
         res.status(201).send('Downloaded Successfully');
     } catch (error) {
+
         res.status(500).send(`Error downloading server files: ${error}`);
+    } finally{
+        Downloadsemaphore.release();
     }
 });
 
-router.get('/files/check-exist', (req, res) => {
+router.get('/check-exist', (req, res) => {
     try{
         const response = Boolean(serverUtils.doesServerJarAlreadyExist());
         res.status(200).send(response);
