@@ -4,7 +4,7 @@ const serverUtils = require('../utils/serverUtils');
 const { Sema } = require('async-sema');
 
 
-router.get('/console/run/:command', async (req, res) => {
+router.put('/console/run/:command', async (req, res) => {
     try{
         await serverUtils.runMCCommand(req.params.command);
         res.status(200).send("done");
@@ -27,10 +27,10 @@ router.get('/console-text', async (req, res) =>{
     }
 });
 
-const Downloadsemaphore = new Sema(1);
+const downloadSema = new Sema(1);
 
-router.get('/download/:version', async (req, res) => {
-    await Downloadsemaphore.acquire();
+router.put('/download/:version', async (req, res) => {
+    await downloadSema.acquire();
     
     try {
         await serverUtils.downloadServerFiles(req.params.version);
@@ -39,7 +39,7 @@ router.get('/download/:version', async (req, res) => {
 
         res.status(500).send(`Error downloading server files: ${error}`);
     } finally{
-        Downloadsemaphore.release();
+        downloadSema.release();
     }
 });
 
@@ -66,7 +66,7 @@ router.get('/check-server', async (req, res) => {
 const startStopSema = new Sema(1);
 
 // Route to start the server
-router.get('/start', async (req, res) => {
+router.put('/start', async (req, res) => {
     await startStopSema.acquire()
     try {
         if (await serverUtils.isServerOn()) {
@@ -84,7 +84,7 @@ router.get('/start', async (req, res) => {
 });
 
 // Route to stop the server
-router.get('/stop', async (req, res) => {
+router.put('/stop', async (req, res) => {
     try {
         if (!(await serverUtils.isServerOn())) {
             return res.status(400).send('Server is not running.');
