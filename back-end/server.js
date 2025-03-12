@@ -2,9 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const os = require('os');
-const { spawn, exec } = require('child_process');
 const serverRoutes = require('./routes/serverRoutes'); // Routes are separated
-const serverUtils = require('./utils/serverUtils');   // Utility functions are separated
+const propertiesRoute = require('./routes/propertiesRoutes'); // Routes are separated
+
 
 const app = express();
 const port = 3001;
@@ -15,6 +15,7 @@ app.use(express.json());
 
 // Routes
 app.use('/server', serverRoutes);
+app.use('/properties', propertiesRoute);
 
 // Default route
 app.get('/', (req, res) => {
