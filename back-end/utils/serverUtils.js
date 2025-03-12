@@ -1,9 +1,6 @@
 const { spawn, exec } = require('child_process');
 const fs = require('fs');
-
-const serverDirectory = '../server';
-const serverName = 'server.jar';
-const serverLogsFilePath = `${serverDirectory}/server_output.txt`;
+const consts = require("../consts");
 
 let serverProcess = null;
 
@@ -18,7 +15,7 @@ async function isServerOn() {
 
 function getServerlogs() {
     try {
-        return fs.readFileSync(serverLogsFilePath, { encoding: 'utf8', flag: 'r' })
+        return fs.readFileSync(consts.serverLogsFilePath, { encoding: 'utf8', flag: 'r' })
     } catch (error) {
         return null;
     }
@@ -108,18 +105,18 @@ async function killStrayServerInstance() {
 // Function to start the server
 async function startServer() {
     const command = 'java';
-    const args = ['-Xmx1024M', '-Xms1024M', '-jar', serverName, 'nogui'];
+    const args = ['-Xmx1024M', '-Xms1024M', '-jar', consts.serverName, 'nogui'];
 
     serverProcess = spawn(command, args, {
-        cwd: serverDirectory, // Set the working directory
+        cwd: consts.serverDirectory, // Set the working directory
         stdio: ['pipe', 'pipe', 'pipe'], // Use pipes for stdin, stdout, and stderr
       });
     
-    fs.writeFileSync(serverLogsFilePath, '');
+    fs.writeFileSync(consts.serverLogsFilePath, '');
 
     serverProcess.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);
-        fs.appendFileSync(serverLogsFilePath, data);
+        fs.appendFileSync(consts.serverLogsFilePath, data);
     });
 
     serverProcess.stderr.on('data', (data) => {
@@ -140,7 +137,7 @@ async function downloadServerFiles(version) {
         );
 
         if (response.ok) {
-            const fileName = `${serverDirectory}/${serverName}`;
+            const fileName = `${consts.serverDirectory}/${consts.serverName}`;
             const arrayBuffer = await response.arrayBuffer();
             const buffer = Buffer.from(arrayBuffer);
             fs.writeFileSync(fileName, buffer);
