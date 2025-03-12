@@ -3,7 +3,29 @@ const router = express.Router();
 const serverUtils = require('../utils/serverUtils');
 const { Sema } = require('async-sema');
 
-// Route to download server files
+
+router.get('/console/run/:command', async (req, res) => {
+    try{
+        await serverUtils.runMCCommand(req.params.command);
+        res.status(200).send("done");
+    }catch(error){
+        console.error(error)
+        res.status(500).send("error.. "+error.message);
+    }
+})
+
+router.get('/console-text', async (req, res) =>{
+    try {
+        const consoleOutput = serverUtils.getServerlogs();
+        if(consoleOutput == null){
+            return res.status(200).send("The server is offline...");
+        }else{
+            return res.status(200).send(consoleOutput);
+        }
+    } catch (error) {
+        res.status(500).send();
+    }
+});
 
 const Downloadsemaphore = new Sema(1);
 
@@ -41,17 +63,23 @@ router.get('/check-server', async (req, res) => {
     }
 });
 
+const startStopSema = new Sema(1);
+
 // Route to start the server
 router.get('/start', async (req, res) => {
+    await startStopSema.acquire()
     try {
         if (await serverUtils.isServerOn()) {
-            return res.status(400).send('Server is already running.');
+            res.status(400).send('Server is already running.');
         }
 
         await serverUtils.startServer();
         res.send('Server started.');
     } catch (error) {
         res.status(500).send(`Error starting server: ${error}`);
+    } finally {
+        startStopSema.release()
+        console.log("startstop sema RELEASED")
     }
 });
 

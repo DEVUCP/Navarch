@@ -5,7 +5,8 @@ const serverDirectory = '../server';
 const serverName = 'server.jar';
 const serverLogsFilePath = `${serverDirectory}/server_output.txt`;
 
-// Function to check if the server is running
+let serverProcess = null;
+
 async function isServerOn() {
     try {
         const serverPID = await getStrayServerInstance();
@@ -15,7 +16,27 @@ async function isServerOn() {
     }
 }
 
-// Function to find the stray Minecraft server instance
+function getServerlogs() {
+    try {
+        return fs.readFileSync(serverLogsFilePath, { encoding: 'utf8', flag: 'r' })
+    } catch (error) {
+        return null;
+    }
+}
+
+async function runMCCommand(command) {
+    try{
+        if(await !isServerOn()){
+            throw new Error("Can't run command, server is offline.")
+        }
+        serverProcess.stdin.write(`${command}\n`);
+    } catch(error){
+        console.error(error);
+    }
+
+}
+
+
 async function getStrayServerInstance() {
     return new Promise((resolve, reject) => {
         const tasklist = spawn('tasklist', ['/FI', 'IMAGENAME eq java.exe']);
@@ -63,7 +84,6 @@ async function getStrayServerInstance() {
     });
 }
 
-// Function to kill the stray server instance
 async function killStrayServerInstance() {
     try {
         const strayServerPID = await getStrayServerInstance();
@@ -90,8 +110,11 @@ async function startServer() {
     const command = 'java';
     const args = ['-Xmx1024M', '-Xms1024M', '-jar', serverName, 'nogui'];
 
-    const serverProcess = spawn(command, args, { cwd: serverDirectory });
-
+    serverProcess = spawn(command, args, {
+        cwd: serverDirectory, // Set the working directory
+        stdio: ['pipe', 'pipe', 'pipe'], // Use pipes for stdin, stdout, and stderr
+      });
+    
     fs.writeFileSync(serverLogsFilePath, '');
 
     serverProcess.stdout.on('data', (data) => {
@@ -149,4 +172,6 @@ module.exports = {
     downloadServerFiles,
     fetchLatestBuild,
     doesServerJarAlreadyExist,
+    getServerlogs,
+    runMCCommand,
 };
