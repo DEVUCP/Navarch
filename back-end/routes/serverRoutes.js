@@ -29,19 +29,6 @@ router.get('/console-text', async (req, res) =>{
 
 const downloadSema = new Sema(1);
 
-router.put('/download/:version', async (req, res) => {
-    await downloadSema.acquire();
-    
-    try {
-        await serverUtils.downloadServerFiles(req.params.version);
-        res.status(201).send('Downloaded Successfully');
-    } catch (error) {
-
-        res.status(500).send(`Error downloading server files: ${error}`);
-    } finally{
-        downloadSema.release();
-    }
-});
 
 router.get('/check-exist', (req, res) => {
     try{
