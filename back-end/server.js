@@ -4,6 +4,7 @@ const fs = require('fs');
 const os = require('os');
 const serverRoutes = require('./routes/serverRoutes'); // Routes are separated
 const propertiesRoute = require('./routes/propertiesRoutes'); // Routes are separated
+const installationsRoutes = require('./routes/installationsRoutes'); // Routes are separated
 
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 
 // Routes
 app.use('/server', serverRoutes);
+app.use('/installations', installationsRoutes);
 app.use('/properties', propertiesRoute);
 
 // Default route
