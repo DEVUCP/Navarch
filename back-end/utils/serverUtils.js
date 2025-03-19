@@ -1,6 +1,7 @@
 const { spawn, exec } = require('child_process');
 const fs = require('fs');
 const consts = require("../consts");
+const {freemem} = require('os');
 
 let serverProcess = null;
 
@@ -102,8 +103,30 @@ async function killStrayServerInstance() {
     }
 }
 
+function validateMemory(){
+    try {
+        
+        const launchConfig = require("../server-config.json");
+        const availableMemory = Math.floor(freemem() / 1048576);
+        if(availableMemory > parseInt(launchConfig["memory"].replace("M",""))){
+
+            console.log(`${launchConfig["memory"]} Available for use!`);
+            return true;
+        }else{
+            console.log(`${launchConfig["memory"]} not available for use!`);
+            return false;
+
+        }
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+}
 // Function to start the server
 async function startServer() {
+    if(!validateMemory()){
+        throw new Error("Not enough memory for server to run");
+    }
     const command = 'java';
     const args = ['-Xmx1024M', '-Xms1024M', '-jar', consts.serverName, 'nogui'];
 

@@ -27,7 +27,6 @@ router.get('/console-text', async (req, res) =>{
     }
 });
 
-const downloadSema = new Sema(1);
 
 
 router.get('/check-exist', (req, res) => {
