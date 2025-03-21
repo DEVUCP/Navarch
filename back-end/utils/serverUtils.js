@@ -24,7 +24,7 @@ function getServerlogs() {
 
 async function runMCCommand(command) {
     try{
-        if(await !isServerOn()){
+        if(!isServerOn()){
             throw new Error("Can't run command, server is offline.")
         }
         serverProcess.stdin.write(`${command}\n`);
@@ -35,7 +35,7 @@ async function runMCCommand(command) {
 }
 
 
-async function getStrayServerInstance() {
+function getStrayServerInstance() {
     return new Promise((resolve, reject) => {
         const tasklist = spawn('tasklist', ['/FI', 'IMAGENAME eq java.exe']);
 
@@ -122,7 +122,7 @@ function validateMemory(){
         return false;
     }
 }
-// Function to start the server
+
 async function startServer() {
     if(!validateMemory()){
         throw new Error("Not enough memory for server to run");
@@ -151,35 +151,6 @@ async function startServer() {
     });
 }
 
-// Function to download server files
-async function downloadServerFiles(version) {
-    try {
-        const build = await fetchLatestBuild(version);
-        const response = await fetch(
-            `https://api.papermc.io/v2/projects/paper/versions/${version}/builds/${build}/downloads/paper-${version}-${build}.jar`
-        );
-
-        if (response.ok) {
-            const fileName = `${consts.serverDirectory}/${consts.serverName}`;
-            const arrayBuffer = await response.arrayBuffer();
-            const buffer = Buffer.from(arrayBuffer);
-            fs.writeFileSync(fileName, buffer);
-            console.log(`Downloaded ${fileName}`);
-        } else {
-            console.log(`Failed to download build ${build} for version ${version}`);
-        }
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-// Function to fetch the latest build for a version
-async function fetchLatestBuild(version) {
-    const response = await fetch(`https://api.papermc.io/v2/projects/paper/versions/${version}/builds`);
-    const jsonBuildData = await response.json();
-    return jsonBuildData.builds.at(-1).build;
-}
-
 async function doesServerJarAlreadyExist() {
     return fs.existsSync("../server/server.jar");
 }
@@ -189,8 +160,6 @@ module.exports = {
     getStrayServerInstance,
     killStrayServerInstance,
     startServer,
-    downloadServerFiles,
-    fetchLatestBuild,
     doesServerJarAlreadyExist,
     getServerlogs,
     runMCCommand,
