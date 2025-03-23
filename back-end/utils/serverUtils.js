@@ -2,12 +2,13 @@ const { spawn, exec } = require('child_process');
 const fs = require('fs');
 const consts = require("../consts");
 const {freemem} = require('os');
+const {getConfigAttribute} = require("./configUtils");
 
 let serverProcess = null;
 
 async function isServerOn() {
     try {
-        const serverPID = await getStrayServerInstance();
+        const serverPID = getConfigAttribute("os") != "Linux" ? await getStrayServerInstance_WINDOWS() : await getStrayServerInstance_LINUX();
         return !!serverPID;
     } catch (error) {
         return false;
@@ -35,7 +36,7 @@ async function runMCCommand(command) {
 }
 
 
-function getStrayServerInstance() {
+function getStrayServerInstance_WINDOWS() {
     return new Promise((resolve, reject) => {
         const tasklist = spawn('tasklist', ['/FI', 'IMAGENAME eq java.exe']);
 
@@ -82,9 +83,9 @@ function getStrayServerInstance() {
     });
 }
 
-async function killStrayServerInstance() {
+async function killStrayServerInstance_WINDOWS() {
     try {
-        const strayServerPID = await getStrayServerInstance();
+        const strayServerPID = await getStrayServerInstance_WINDOWS();
         const command = `taskkill /PID ${strayServerPID} /F`;
 
         exec(command, (error, stdout, stderr) => {
@@ -102,6 +103,80 @@ async function killStrayServerInstance() {
         console.error(error);
     }
 }
+
+
+function getStrayServerInstance_LINUX() {
+    return new Promise((resolve, reject) => {
+        // Use 'ps' to find Java processes
+        const ps = spawn('ps', ['-C', 'java', '-o', 'pid=']);
+
+        let output = '';
+        ps.stdout.on('data', (data) => {
+            output += data.toString();
+        });
+
+        ps.stderr.on('data', (data) => {
+            reject(`Error in ps: ${data.toString()}`);
+        });
+
+        ps.on('close', (code) => {
+            if (code !== 0) {
+                reject(`ps command failed with code ${code}`);
+            } else if (output.trim()) {
+                // Use 'ss' to find processes listening on port 25565
+                const ss = spawn('ss', ['-tlnp']);
+
+                let ssOutput = '';
+                ss.stdout.on('data', (data) => {
+                    ssOutput += data.toString();
+                });
+
+                ss.stderr.on('data', (data) => {
+                    reject(`Error in ss: ${data.toString()}`);
+                });
+
+                ss.on('close', (code) => {
+                    if (code !== 0) {
+                        reject(`ss command failed with code ${code}`);
+                    } else {
+                        // Find the process listening on port 25565
+                        const match = ssOutput.match(/LISTEN\s+\d+\s+\d+\s+.*:25565\s+.*pid=(\d+)/i);
+                        if (match) {
+                            resolve(parseInt(match[1]));
+                        } else {
+                            reject('No Minecraft server found on port 25565');
+                        }
+                    }
+                });
+            } else {
+                reject('No Minecraft server found with java process');
+            }
+        });
+    });
+}
+
+async function killStrayServerInstance_LINUX() {
+    try {
+        const strayServerPID = await getStrayServerInstance_LINUX();
+        const command = `kill -9 ${strayServerPID}`;
+
+        exec(command, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`exec error: ${error}`);
+                return;
+            }
+            if (stderr) {
+                console.error(`stderr: ${stderr}`);
+                return;
+            }
+            console.log(`Process with PID ${strayServerPID} killed successfully`);
+        });
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
 
 function validateMemory(){
     try {
@@ -157,8 +232,10 @@ async function doesServerJarAlreadyExist() {
 
 module.exports = {
     isServerOn,
-    getStrayServerInstance,
-    killStrayServerInstance,
+    getStrayServerInstance_WINDOWS,
+    getStrayServerInstance_LINUX,
+    killStrayServerInstance_WINDOWS,
+    killStrayServerInstance_LINUX,
     startServer,
     doesServerJarAlreadyExist,
     getServerlogs,
