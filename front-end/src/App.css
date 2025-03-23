@@ -27,6 +27,8 @@
   justify-content: center;
   gap: 1em;
   width: 100%; /* Make the sub-container take up the full width of its parent */
+  padding-bottom: 2em;
+  padding-top: 2em;
 }
 .server-name {
   color: aliceblue;
