@@ -1,4 +1,5 @@
 server/*
+server-config.json
 
 # Node.js
 back-end/node_modules/
