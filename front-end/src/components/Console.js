@@ -1,6 +1,6 @@
 import { useEffect , useState} from "react";
-import styles from './Console.module.css'
-import { useServerStatus, getServerStatus } from "./monitor";
+import styles from '../styles/Console.module.css'
+import { useServerStatus, getServerStatus } from "../utils/monitor";
 
 function Console(){
     const [consoleText, setConsoleText] = useState("The server is offline...");

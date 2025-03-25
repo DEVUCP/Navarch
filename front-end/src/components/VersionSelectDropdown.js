@@ -1,5 +1,5 @@
 import { useEffect , useState} from "react";
-import styles from './VersionSelectDropdown.module.css';
+import styles from '../styles/VersionSelectDropdown.module.css';
 
 function VersionSelectDropdown(){
     

@@ -1,0 +1,26 @@
+.subContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+    width: 100%; /* Make the sub-container take up the full width of its parent */
+    padding-bottom: 2em;
+    padding-top: 2em;
+  }
+
+.container {
+    display: flex;
+    min-height: 80%;
+    border-radius: 0.5em;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    width:80%;
+    gap: 3px;
+    outline: 1px solid;
+    outline-color: aliceblue;
+    outline-width: 0.25em;
+    background-color: rgb(88, 113, 255);
+  }
+

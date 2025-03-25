@@ -3,33 +3,20 @@
 .App {
   background-color: rgb(41, 41, 41);
   display: flex; /* Add this to center the container */
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh; /* Ensure the body takes up the full viewport height */
   margin: 0; /* Remove default margin */
 }
 
-.container {
-  display: flex;
-  background-color: rgb(88, 113, 255);
-  min-height: 15em;
-  border-radius: 0.5em;
-  align-items: center;
-  justify-content: center;
-  width: 80%; /* Adjust as needed */
-  max-width: 600px; /* Optional: Set a max-width for better responsiveness */
-}
 
-.sub-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1em;
-  width: 100%; /* Make the sub-container take up the full width of its parent */
-  padding-bottom: 2em;
-  padding-top: 2em;
-}
 .server-name {
   color: aliceblue;
+}
+
+.sidebar-container{
+  display:flex ;
+  justify-content: center;
+  width: 100%;
 }
