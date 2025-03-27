@@ -26,8 +26,9 @@
             type="button" 
             onClick={startStopServer} 
             className={"btn btn-lg " + "btn-"+ (!serverStatus ? "success" : "danger") +" w-100"} 
-            id="start-stop-btn">
-                {!serverStatus ? "Start " : "Stop " +"Server"}
+            id="start-stop-btn"
+            style={{outline: "0.25em solid black",borderRadius: ".25em"}}>
+                {!serverStatus ? "Start "+"Server" : "Stop " +"Server"}
             </button>
     )
     }
