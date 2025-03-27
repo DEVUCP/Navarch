@@ -5,8 +5,7 @@
     justify-content: center;
     gap: 1em;
     width: 100%; /* Make the sub-container take up the full width of its parent */
-    padding-bottom: 2em;
-    padding-top: 2em;
+    padding: 2em 2em 2em 2em;
   }
 
 .container {
@@ -19,8 +18,18 @@
     width:80%;
     gap: 3px;
     outline: 1px solid;
-    outline-color: aliceblue;
+    outline-color: rgb(0, 0, 0);
     outline-width: 0.25em;
-    background-color: rgb(88, 113, 255);
+    background-color: rgb(81, 86, 114);
   }
+
+.hidden {
+  display: none;
+}
+.tabPage{
+  display: block;
+  height: 80%;
+  width: 80%;
+  background-color: rgb(48, 51, 68);
+}
 
