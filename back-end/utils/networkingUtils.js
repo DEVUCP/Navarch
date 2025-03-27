@@ -26,13 +26,13 @@ async function forwardPort(internal_port, ip, protocol="TCP", external_port=inte
     let upnpcPath = "";
 
     if(os =="Windows_NT"){
-      upnpcPath = path.join(__dirname, '../upnpc/upnpc-shared.exe');
+      upnpcPath = path.normalize(path.join(__dirname, '../upnpc/upnpc-shared.exe'));
     }else{
       upnpcPath = "upnpc";
     }
     
 
-    const { stdout, stderr } = await execPromise(`${upnpcPath} -a ${ip} ${internal_port} ${external_port} ${protocol}`);
+    const { stdout, stderr } = await execPromise(`"${upnpcPath}" -a ${ip} ${internal_port} ${external_port} ${protocol}`);
 
     if (stdout) {
       console.log(`Command stdout: ${stdout}`);
@@ -60,7 +60,7 @@ async function removePortMapping(external_port, protocol="TCP") {
       upnpcPath = "upnpc";
     }
     
-    const { stdout, stderr } = await execPromise(`${upnpcPath} -d ${external_port} ${protocol}`);
+    const { stdout, stderr } = await execPromise(`"${upnpcPath}" -d ${external_port} ${protocol}`);
 
     if (stdout) {
       console.log(`Command stdout: ${stdout}`);
@@ -80,9 +80,8 @@ async function removePortMapping(external_port, protocol="TCP") {
 async function getIP_WINDOWS(local) {
   try {
     const upnpcPath = path.join(__dirname, '../upnpc/upnpc-shared.exe');
-
-    const { stdout, stderr } = await execPromise(`${upnpcPath} -l`);
-
+    const { stdout, stderr } = await execPromise(`"${upnpcPath}" -l`); // Wrap in quotes!
+    
     if (stderr) {
       console.error(`Command stderr: ${stderr}`);
       return null;
@@ -98,7 +97,7 @@ async function getIP_WINDOWS(local) {
       return publicIpMatch ? publicIpMatch[1] : 'Not found';
     }
   } catch (error) {
-    console.error(`Error executing command: ${error.message}`);
+    console.error(`Error getting IP: ${error.message}`);
     return null;
   }
 }
