@@ -49,6 +49,34 @@ async function forwardPort(internal_port, ip, protocol="TCP", external_port=inte
   }
 }
 
+async function removePortMapping(external_port, protocol="TCP") {
+  const os = configUtils.getConfigAttribute("os");
+  try {
+    let upnpcPath = "";
+
+    if(os == "Windows_NT") {
+      upnpcPath = path.join(__dirname, '../upnpc/upnpc-shared.exe');
+    } else {
+      upnpcPath = "upnpc";
+    }
+    
+    const { stdout, stderr } = await execPromise(`${upnpcPath} -d ${external_port} ${protocol}`);
+
+    if (stdout) {
+      console.log(`Command stdout: ${stdout}`);
+    }
+
+    if (stderr) {
+      console.error(`Command stderr: ${stderr}`);
+      return null;
+    }
+
+  } catch (error) {
+    console.error(`Error executing command: ${error.message}`);
+    return null;
+  }
+}
+
 async function getIP_WINDOWS(local) {
   try {
     const upnpcPath = path.join(__dirname, '../upnpc/upnpc-shared.exe');
@@ -105,4 +133,5 @@ async function getIP_LINUX(local) {
 module.exports = {
     getIP,
     forwardPort,
+    removePortMapping,
 }
