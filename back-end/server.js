@@ -6,6 +6,37 @@ const propertiesRoute = require('./routes/propertiesRoutes'); // Routes are sepa
 const installationsRoutes = require('./routes/installationsRoutes'); // Routes are separated
 const networkingUtils = require('./utils/networkingUtils');
 
+async function cleanup() {
+    console.log('Running cleanup tasks...');
+
+    console.log('Removing port mapping ...');
+    await networkingUtils.removePortMapping(3000);
+
+    console.log('Removing port mapping ...');
+    await networkingUtils.removePortMapping(3001);
+    
+    console.log('Removing port mapping ...');
+    await networkingUtils.removePortMapping(25565);
+}
+
+process.on('exit', cleanup);
+
+process.on('SIGINT', async () => {
+    await cleanup();
+    process.exit(0);
+});
+
+process.on('SIGTERM', async () => {
+    await cleanup();
+    process.exit(0);
+});
+
+process.on('uncaughtException', async (err) => {
+    console.error('Uncaught Exception:', err);
+    await cleanup();
+    process.exit(1);
+});
+
 const app = express();
 const port = 3001;
 
@@ -33,7 +64,9 @@ app.listen(port, async () => {
     const ip = await networkingUtils.getIP(local=true)
     console.log("local-ip:", ip);
     console.log(`attempting to forward ports ${port}, 3000`);
+    
     networkingUtils.forwardPort(3000, ip);
     networkingUtils.forwardPort(3001, ip);
+    networkingUtils.forwardPort(25565, ip);
 
 });
