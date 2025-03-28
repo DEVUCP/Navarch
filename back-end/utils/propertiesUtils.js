@@ -17,7 +17,18 @@ async function getProperties(){
     }
 }
 
+function getWhitelistJSON(){
+    try {
+        if(!fs.existsSync(consts.serverWhitelistPath)){
+            return {};
+        }
+        var whitelistJSON = JSON.parse(fs.readFileSync(consts.serverWhitelistPath,{ encoding: 'utf8', flag: 'r' }));
+        return whitelistJSON;
 
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 async function updateProperty(propertyName, toggleable, updateValue){
     try{
@@ -111,4 +122,5 @@ module.exports = {
     getProperties,
     updateProperty,
     getOnlinePlayers,
+    getWhitelistJSON,
 }
