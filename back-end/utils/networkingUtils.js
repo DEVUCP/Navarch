@@ -9,7 +9,6 @@ const configUtils = require('./configUtils')
 const execPromise = util.promisify(exec);
 
 async function getIP(local) {
-  console.log("os:",configUtils.getConfigAttribute("os"));
   switch(configUtils.getConfigAttribute("os")){
     case "Windows_NT":
       return await getIP_WINDOWS(local);
