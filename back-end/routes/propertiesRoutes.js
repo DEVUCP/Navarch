@@ -33,4 +33,16 @@ router.put('/toggle/:property', async (req, res) => {
 })
 
 
+router.get('/player-count', async (req, res) => {
+    try{
+        const playerCount = await propertiesUtils.getOnlinePlayers()
+        res.status(200).send({playerCount: playerCount});
+    }catch(error){
+        console.error(error)
+        res.status(500).send("error.. " + error.message);
+    }
+})
+
+
+
 module.exports = router;
