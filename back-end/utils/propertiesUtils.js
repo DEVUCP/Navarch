@@ -30,6 +30,19 @@ function getWhitelistJSON(){
     }
 }
 
+function getOpsJSON(){
+    try {
+        if(!fs.existsSync(consts.serverOpsPath)){
+            return {};
+        }
+        var opsJSON = JSON.parse(fs.readFileSync(consts.serverOpsPath,{ encoding: 'utf8', flag: 'r' }));
+        return opsJSON;
+
+    } catch (error) {
+        console.error(error);
+    }  
+}
+
 async function updateProperty(propertyName, toggleable, updateValue){
     try{
         if(!fs.existsSync(consts.serverPropertiesPath)){
@@ -123,4 +136,5 @@ module.exports = {
     updateProperty,
     getOnlinePlayers,
     getWhitelistJSON,
+    getOpsJSON,
 }
