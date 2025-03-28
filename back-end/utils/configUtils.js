@@ -50,5 +50,5 @@ module.exports = {
     doesConfigExist,
     getConfigAttribute,
     updateConfigAttribute,
-
+    getConfigJSON,
 }
