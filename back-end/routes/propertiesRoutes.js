@@ -61,7 +61,15 @@ router.get('/whitelist.json', async (req, res) => {
         res.status(500).send("error.. " + error.message);
     }
 })
-
+router.get('/ops.json', async (req, res) => {
+    try{
+        const opsJSON = propertiesUtils.getOpsJSON();
+        res.status(200).send(opsJSON);
+    }catch(error){
+        console.error(error)
+        res.status(500).send("error.. " + error.message);
+    }
+})
 
 
 module.exports = router;
