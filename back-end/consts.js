@@ -3,6 +3,11 @@ const serverName = 'server.jar';
 const launchOptions = './launch-options.json'
 const serverLogsFilePath = `${serverDirectory}/server_output.txt`;
 const serverPropertiesPath = `${serverDirectory}/server.properties`
+const serverWhitelistPath = `${serverDirectory}/whitelist.json`
+const serverOpsPath = `${serverDirectory}/ops.json`
+const severBannedPlayers = `${serverDirectory}/banned-players.json`
+
+
 const configFilePath = "./server-config.json";
 const upnpcPath = '/upnpc';
 
@@ -15,4 +20,7 @@ module.exports = {
     launchOptions,
     upnpcPath,
     configFilePath,
+    serverWhitelistPath,
+    serverOpsPath,
+    severBannedPlayers,
 };
