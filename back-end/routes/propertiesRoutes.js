@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const serverUtils = require('../utils/serverUtils');
 const propertiesUtils = require('../utils/propertiesUtils');
+const configUtils = require("../utils/configUtils");
 
 const { Sema } = require('async-sema');
 
@@ -42,6 +42,17 @@ router.get('/player-count', async (req, res) => {
         res.status(500).send("error.. " + error.message);
     }
 })
+
+router.get('/config', async (req, res) => {
+    try{
+        const configJSON = configUtils.getConfigJSON();
+        res.status(200).send(configJSON);
+    }catch(error){
+        console.error(error)
+        res.status(500).send("error.. " + error.message);
+    }
+})
+
 
 
 
