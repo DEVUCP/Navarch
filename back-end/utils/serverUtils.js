@@ -35,6 +35,20 @@ async function runMCCommand(command) {
 
 }
 
+async function killStrayServerInstance(){
+    switch(getConfigAttribute("os")){
+        case "Windows_NT":
+            await killStrayServerInstance_WINDOWS();
+            break;
+        case "Linux":
+            await killStrayServerInstance_LINUX();
+            break;
+
+        case _:
+            await killStrayServerInstance_LINUX();
+            break;
+  }
+}
 
 function getStrayServerInstance_WINDOWS() {
     return new Promise((resolve, reject) => {
@@ -68,11 +82,15 @@ function getStrayServerInstance_WINDOWS() {
                     if (code !== 0) {
                         reject(`netstat command failed with code ${code}`);
                     } else {
-                        const match = netstatOutput.match(/TCP\s+.*:25565\s+.*\s+LISTENING\s+(\d+)/i);
+
+                        const port = getConfigAttribute("port");
+                        const regex = new RegExp(`TCP\\s+.*:${port}\\s+.*\\s+LISTENING\\s+(\\d+)`, 'i');
+                        const match = netstatOutput.match(regex);
+                                             
                         if (match) {
                             resolve(parseInt(match[1]));
                         } else {
-                            reject('No Minecraft server found on port 25565');
+                            reject(`No Minecraft server found on port ${port}`);
                         }
                     }
                 });
@@ -140,11 +158,12 @@ function getStrayServerInstance_LINUX() {
                         reject(`ss command failed with code ${code}`);
                     } else {
                         // Find the process listening on port 25565
-                        const match = ssOutput.match(/LISTEN\s+\d+\s+\d+\s+.*:25565\s+.*pid=(\d+)/i);
-                        if (match) {
+                        const port = getConfigAttribute("port");
+                        const regex = new RegExp(`TCP\\s+.*:${port}\\s+.*\\s+LISTENING\\s+(\\d+)`, 'i');
+                        const match = netstatOutput.match(regex);                        if (match) {
                             resolve(parseInt(match[1]));
                         } else {
-                            reject('No Minecraft server found on port 25565');
+                            reject(`No Minecraft server found on port ${port}`);
                         }
                     }
                 });
@@ -240,4 +259,5 @@ module.exports = {
     doesServerJarAlreadyExist,
     getServerlogs,
     runMCCommand,
+    killStrayServerInstance,
 };
