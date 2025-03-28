@@ -13,12 +13,14 @@ function getConfigAttribute(attributeName){
 
 }
 
-function generateConfigFile(){
+function generateConfigFile(port=25565){
     let config = {
         os: os.type(),
         memory: "1024M",
         platform: "vanilla",
-        version: "1.21.4"
+        version: "1.21.4",
+        port: port,
+        debug: false
     };
     const jsonConfig = JSON.stringify(config, null, 4);
     fs.writeFileSync("./server-config.json", jsonConfig);

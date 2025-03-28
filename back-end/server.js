@@ -14,9 +14,9 @@ async function cleanup() {
 
     console.log('Removing port mapping ...');
     await networkingUtils.removePortMapping(3001);
-    
+
     console.log('Removing port mapping ...');
-    await networkingUtils.removePortMapping(25565);
+    await networkingUtils.removePortMapping(configUtils.getConfigAttribute("port"));
 }
 
 process.on('exit', cleanup);
@@ -58,15 +58,17 @@ app.get('/', async (req, res) => {
 app.listen(port, async () => {
     console.log(`port: ${port}`);
     if (!configUtils.doesConfigExist()){
-        configUtils.generateConfigFile();
+        configUtils.generateConfigFile(3002);
         console.log("sever-config generated successfully")
     }
     const ip = await networkingUtils.getIP(local=true)
     console.log("local-ip:", ip);
-    console.log(`attempting to forward ports ${port}, 3000`);
-    
-    networkingUtils.forwardPort(3000, ip);
-    networkingUtils.forwardPort(3001, ip);
-    networkingUtils.forwardPort(25565, ip);
+
+
+    if(configUtils.getConfigAttribute("debug") == "false"){
+        networkingUtils.forwardPort(3001, ip);
+        networkingUtils.forwardPort(3000, ip);
+        networkingUtils.forwardPort(configUtils.getConfigAttribute("port"), ip);
+    }
 
 });
