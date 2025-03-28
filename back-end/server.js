@@ -58,7 +58,7 @@ app.get('/', async (req, res) => {
 app.listen(port, async () => {
     console.log(`port: ${port}`);
     if (!configUtils.doesConfigExist()){
-        configUtils.generateConfigFile(3002);
+        configUtils.generateConfigFile();
         console.log("sever-config generated successfully")
     }
     const ip = await networkingUtils.getIP(local=true)
