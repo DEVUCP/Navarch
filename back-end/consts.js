@@ -5,7 +5,7 @@ const serverLogsFilePath = `${serverDirectory}/server_output.txt`;
 const serverPropertiesPath = `${serverDirectory}/server.properties`
 const serverWhitelistPath = `${serverDirectory}/whitelist.json`
 const serverOpsPath = `${serverDirectory}/ops.json`
-const severBannedPlayers = `${serverDirectory}/banned-players.json`
+const serverBannedPlayersPath = `${serverDirectory}/banned-players.json`
 
 
 const configFilePath = "./server-config.json";
@@ -22,5 +22,5 @@ module.exports = {
     configFilePath,
     serverWhitelistPath,
     serverOpsPath,
-    severBannedPlayers,
+    serverBannedPlayersPath,
 };
