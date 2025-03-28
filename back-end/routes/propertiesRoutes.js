@@ -70,6 +70,15 @@ router.get('/ops.json', async (req, res) => {
         res.status(500).send("error.. " + error.message);
     }
 })
+router.get('/banned-players.json', async (req, res) => {
+    try{
+        const bannedplayersJSON = propertiesUtils.getBannedPlayersJSON();
+        res.status(200).send(bannedplayersJSON);
+    }catch(error){
+        console.error(error)
+        res.status(500).send("error.. " + error.message);
+    }
+})
 
 
 module.exports = router;
