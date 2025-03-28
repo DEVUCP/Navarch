@@ -43,6 +43,21 @@ function getOpsJSON(){
     }  
 }
 
+
+function getBannedPlayersJSON(){
+    try {
+        if(!fs.existsSync(consts.serverBannedPlayersPath)){
+            return {};
+        }
+        var bannedPlayersJSON = JSON.parse(fs.readFileSync(consts.serverBannedPlayersPath,{ encoding: 'utf8', flag: 'r' }));
+        return bannedPlayersJSON;
+
+    } catch (error) {
+        console.error(error);
+    }  
+}
+
+
 async function updateProperty(propertyName, toggleable, updateValue){
     try{
         if(!fs.existsSync(consts.serverPropertiesPath)){
@@ -137,4 +152,5 @@ module.exports = {
     getOnlinePlayers,
     getWhitelistJSON,
     getOpsJSON,
+    getBannedPlayersJSON,
 }
