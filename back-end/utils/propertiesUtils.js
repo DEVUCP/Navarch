@@ -1,6 +1,7 @@
 const consts = require("../consts");
 const fs = require("fs");
-
+const { getConfigAttribute } = require("./configUtils");
+const { spawn } = require('child_process');
 
 async function getProperties(){
     try{
@@ -72,7 +73,42 @@ function JSONToProperties(json){
 }
 
 
+async function getOnlinePlayers() {
+    const port = getConfigAttribute("port");
+    
+    return new Promise((resolve) => {
+        let output = '';
+        
+        const netstat = spawn('netstat', ['-ano']);
+        const find = spawn('find', [`"${port}"`], { shell: true });
+
+        netstat.stdout.pipe(find.stdin);
+        
+        find.stdout.on('data', (data) => {
+            output += data.toString();
+        });
+
+        find.on('close', (code) => {
+            if (code === 0 || code === 1) {  // find returns 1 when no matches
+                const lines = output.trim().split('\n');
+                const count = lines.filter(line => line.includes('ESTABLISHED')).length;
+                resolve(count);
+            } else {
+                console.error('find command failed with code:', code);
+                resolve(0);
+            }
+        });
+
+        find.on('error', (err) => {
+            console.error('find command error:', err);
+            resolve(0);
+        });
+    });
+}
+
+
 module.exports = {
     getProperties,
     updateProperty,
+    getOnlinePlayers,
 }
