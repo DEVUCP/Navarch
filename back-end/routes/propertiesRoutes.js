@@ -43,7 +43,7 @@ router.get('/player-count', async (req, res) => {
     }
 })
 
-router.get('/config', async (req, res) => {
+router.get('/server-config.json', async (req, res) => {
     try{
         const configJSON = configUtils.getConfigJSON();
         res.status(200).send(configJSON);
@@ -52,7 +52,15 @@ router.get('/config', async (req, res) => {
         res.status(500).send("error.. " + error.message);
     }
 })
-
+router.get('/whitelist.json', async (req, res) => {
+    try{
+        const whitelistJSON = propertiesUtils.getWhitelistJSON();
+        res.status(200).send(whitelistJSON);
+    }catch(error){
+        console.error(error)
+        res.status(500).send("error.. " + error.message);
+    }
+})
 
 
 
