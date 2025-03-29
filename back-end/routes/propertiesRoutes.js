@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const propertiesUtils = require('../utils/propertiesUtils');
 const configUtils = require("../utils/configUtils");
+const jsonFilesUtils = require("../utils/jsonFilesUtils");
+
 
 const { Sema } = require('async-sema');
 
@@ -82,12 +84,52 @@ router.get('/banned-players.json', async (req, res) => {
 router.put('/:operation/op/:playername', async (req, res) => {
     try{
         if(req.params.operation === "add"){
-            await propertiesUtils.modifyOpsJSON(req.params.playername, true);
+            await jsonFilesUtils.modifyOpsJSON(req.params.playername, true);
             res.status(200).send(`Added ${req.params.playername} as an Operator`);
 
         } else if(req.params.operation === "remove") {
-            await propertiesUtils.modifyOpsJSON(req.params.playername, false);
+            await jsonFilesUtils.modifyOpsJSON(req.params.playername, false);
             res.status(200).send(`Remove ${req.params.playername} as an Operator`);
+
+        } else {
+            res.status(404).send(`Invalid operation ${req.params.operation}`);
+        }
+
+    }catch(error){
+        console.error(error)
+        res.status(500).send("error.. " + error.message);
+    }
+})
+
+router.put('/:operation/whitelist/:playername', async (req, res) => {
+    try{
+        if(req.params.operation === "add"){
+            await jsonFilesUtils.modifyWhitelistJSON(req.params.playername, true);
+            res.status(200).send(`Added ${req.params.playername} as an Operator`);
+
+        } else if(req.params.operation === "remove") {
+            await jsonFilesUtils.modifyWhitelistJSON(req.params.playername, false);
+            res.status(200).send(`Remove ${req.params.playername} as an Operator`);
+
+        } else {
+            res.status(404).send(`Invalid operation ${req.params.operation}`);
+        }
+
+    }catch(error){
+        console.error(error)
+        res.status(500).send("error.. " + error.message);
+    }
+})
+
+router.put('/:operation/ban/:playername', async (req, res) => {
+    try{
+        if(req.params.operation === "add"){
+            await jsonFilesUtils.modifyBannedPlayersJSON(req.params.playername, true);
+            res.status(200).send(`Banned ${req.params.playername} `);
+
+        } else if(req.params.operation === "remove") {
+            await jsonFilesUtils.modifyBannedPlayersJSON(req.params.playername, false);
+            res.status(200).send(`Pardoned ${req.params.playername}`);
 
         } else {
             res.status(404).send(`Invalid operation ${req.params.operation}`);
