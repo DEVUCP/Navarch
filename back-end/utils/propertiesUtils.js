@@ -49,21 +49,30 @@ async function modifyOpsJSON(playerName, add){
 
     const uuid = await getUUID(playerName);
     if(add){
-    opsJSON.push(
+        for(let i = 0; i < opsJSON.length ; i++){
+            if(opsJSON[i].uuid == uuid){
+                throw new Error(`Player ${playerName} already an Operator`);
+            }
+        }
+        opsJSON.push(
         {
             "uuid": uuid,
             "name": playerName,
             "level": 4,
             "bypassesPlayerLimit": false
-        }
-    )
+            }
+        )
     } else {
+        let duplicateExist = true;
         for(let i = 0; i < opsJSON.length ; i++){
             if(opsJSON[i].uuid == uuid){
+                duplicateExist = false;
                 opsJSON.splice(i, 1);
                 break;
             }
         }
+        if(duplicateExist)
+            throw new Error(`Player ${playerName} is not an Operator`);
     }
 
     fs.writeFileSync(consts.serverOpsPath, JSON.stringify(opsJSON, null, 4), {encoding : 'utf8'});

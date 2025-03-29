@@ -79,10 +79,20 @@ router.get('/banned-players.json', async (req, res) => {
         res.status(500).send("error.. " + error.message);
     }
 })
-router.put('/add/op/:playername', async (req, res) => {
+router.put('/:operation/op/:playername', async (req, res) => {
     try{
-        await propertiesUtils.modifyOpsJSON(req.params.playername, add=true);
-        res.status(200).send(`Added ${req.params.playername} as an Operator`);
+        if(req.params.operation === "add"){
+            await propertiesUtils.modifyOpsJSON(req.params.playername, true);
+            res.status(200).send(`Added ${req.params.playername} as an Operator`);
+
+        } else if(req.params.operation === "remove") {
+            await propertiesUtils.modifyOpsJSON(req.params.playername, false);
+            res.status(200).send(`Remove ${req.params.playername} as an Operator`);
+
+        } else {
+            res.status(404).send(`Invalid operation ${req.params.operation}`);
+        }
+
     }catch(error){
         console.error(error)
         res.status(500).send("error.. " + error.message);
