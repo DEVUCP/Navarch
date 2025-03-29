@@ -141,4 +141,24 @@ router.put('/:operation/ban/:playername', async (req, res) => {
     }
 })
 
+router.put('/:operation/ban-ip/:ip', async (req, res) => {
+    try{
+        if(req.params.operation === "add"){
+            await jsonFilesUtils.modifyBannedIPsJSON(req.params.ip, true);
+            res.status(200).send(`Banned ${req.params.ip} `);
+
+        } else if(req.params.operation === "remove") {
+            await jsonFilesUtils.modifyBannedIPsJSON(req.params.ip, false);
+            res.status(200).send(`Pardoned ${req.params.ip}`);
+
+        } else {
+            res.status(404).send(`Invalid operation ${req.params.operation}`);
+        }
+
+    }catch(error){
+        console.error(error)
+        res.status(500).send("error.. " + error.message);
+    }
+})
+
 module.exports = router;
