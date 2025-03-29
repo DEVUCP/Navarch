@@ -79,6 +79,14 @@ router.get('/banned-players.json', async (req, res) => {
         res.status(500).send("error.. " + error.message);
     }
 })
-
+router.put('/add/op/:playername', async (req, res) => {
+    try{
+        await propertiesUtils.modifyOpsJSON(req.params.playername, add=true);
+        res.status(200).send(`Added ${req.params.playername} as an Operator`);
+    }catch(error){
+        console.error(error)
+        res.status(500).send("error.. " + error.message);
+    }
+})
 
 module.exports = router;
