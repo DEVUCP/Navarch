@@ -54,6 +54,12 @@ app.get('/', async (req, res) => {
     res.send('<h1>Hello, Express.js Server!</h1>');
 });
 
+app.put('/close', async (req, res) =>{
+    await cleanup();
+    res.status(200).send("closed");
+    process.exit(0);
+})
+
 // Start the server
 app.listen(port, async () => {
     console.log(`port: ${port}`);
@@ -64,8 +70,8 @@ app.listen(port, async () => {
     const ip = await networkingUtils.getIP(local=true)
     console.log("local-ip:", ip);
 
-
-    if(configUtils.getConfigAttribute("debug") == "false"){
+    console.log(configUtils.getConfigAttribute("debug"));
+    if(configUtils.getConfigAttribute("debug") === false){
         networkingUtils.forwardPort(3001, ip);
         networkingUtils.forwardPort(3000, ip);
         networkingUtils.forwardPort(configUtils.getConfigAttribute("port"), ip);
