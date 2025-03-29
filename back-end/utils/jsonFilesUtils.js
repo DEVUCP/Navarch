@@ -41,6 +41,20 @@ function getBannedPlayersJSON(){
     }  
 }
 
+
+function getBannedIPsJSON(){
+    try {
+        if(!fs.existsSync(consts.serverBannedPlayersPath)){
+            return {};
+        }
+        var BannedIPsJSON = JSON.parse(fs.readFileSync(consts.serverBannedIPsPath,{ encoding: 'utf8', flag: 'r' }));
+        return BannedIPsJSON;
+
+    } catch (error) {
+        console.error(error);
+    }  
+}
+
 async function modifyOpsJSON(playerName, add){
     var opsJSON = getOpsJSON();
 
@@ -161,6 +175,56 @@ async function modifyBannedPlayersJSON(playerName, add){
 
 }
 
+async function modifyBannedIPsJSON(ip, add){  
+
+
+    function getCurrentTimeISOFormatted() {
+        const now = new Date();
+        const isoStr = now.toISOString(); // "2025-03-29T12:28:02.123Z"
+        
+        // Extract and reformat parts
+        const [date, time] = isoStr.split('T');
+        const formattedTime = time.replace(/\..+Z$/, ''); // Remove milliseconds and 'Z'
+        
+        return `${date} ${formattedTime} +0000`;
+    }
+    
+    
+    var BannedIPsJSON = getBannedIPsJSON();
+
+    if(add){
+        for(let i = 0; i < BannedIPsJSON.length ; i++){
+            if(BannedIPsJSON[i].ip == ip){
+                throw new Error(`IP ${ip} already banned`);
+            }
+        }
+        BannedIPsJSON.push(
+        {
+            "ip": ip,
+            "created": getCurrentTimeISOFormatted(),
+            "source": "Server",
+            "expires": "forever",
+            "reason": "Banned by an operator."
+            }
+        )
+    } else {
+        let duplicateExist = true;
+        for(let i = 0; i < BannedIPsJSON.length ; i++){
+            if(BannedIPsJSON[i].ip == ip){
+                duplicateExist = false;
+                BannedIPsJSON.splice(i, 1);
+                break;
+            }
+        }
+        if(duplicateExist)
+            throw new Error(`IP ${ip} is not banned`);
+    }
+
+    fs.writeFileSync(consts.serverBannedIPsPath, JSON.stringify(BannedIPsJSON, null, 4), {encoding : 'utf8'});
+
+}
+
+
 
 
 async function getUUID(username) {
@@ -219,5 +283,6 @@ module.exports = {
     modifyOpsJSON,
     modifyWhitelistJSON,
     modifyBannedPlayersJSON,
+    modifyBannedIPsJSON,
     getUUID,
 }
