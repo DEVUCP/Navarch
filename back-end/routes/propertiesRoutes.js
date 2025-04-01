@@ -8,6 +8,8 @@ const jsonFilesUtils = require("../utils/jsonFilesUtils");
 const { Sema } = require('async-sema');
 
 let togglePropertySema = new Sema(1);
+let ramAllocationSema = new Sema(1);
+
 
 router.get('/', async (req, res) => {
     try{
@@ -34,6 +36,19 @@ router.put('/toggle/:property', async (req, res) => {
     }
 })
 
+
+router.put('/allocate-ram/:mb', async (req, res) => {
+    ramAllocationSema.acquire()
+    try{
+        configUtils.updateMemoryAllocated(req.params.mb, true);
+        res.status(200).send(`Ram allocation updated to ${req.params.mb}M`);
+    }catch(error){
+        console.error(error)
+        res.status(500).send("error.. " + error.message);
+    }finally{
+        ramAllocationSema.release()
+    }
+})
 
 router.get('/player-count', async (req, res) => {
     try{
