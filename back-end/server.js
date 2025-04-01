@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require("express-rate-limit");
 const configUtils = require('./utils/configUtils')
 const serverRoutes = require('./routes/serverRoutes'); // Routes are separated
 const propertiesRoute = require('./routes/propertiesRoutes'); // Routes are separated
@@ -41,6 +42,14 @@ const app = express();
 const port = 3001;
 
 // Middleware
+
+const limiter = rateLimit({
+    max: 10, // maximum of 10 requests per window (15 sec) 
+    windowMs:  15 * 1000, // Window : 15 seconds
+    message: "You are being rate-limited."
+});
+
+app.use(limiter)
 app.use(cors());
 app.use(express.json());
 
