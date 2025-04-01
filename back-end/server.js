@@ -46,7 +46,10 @@ const port = 3001;
 const limiter = rateLimit({
     max: 10, // maximum of 10 requests per window (15 sec) 
     windowMs:  15 * 1000, // Window : 15 seconds
-    message: "You are being rate-limited."
+    message: "You are being rate-limited.",
+    headers: {
+        "Retry-After": 15
+    }
 });
 
 app.use(limiter)
