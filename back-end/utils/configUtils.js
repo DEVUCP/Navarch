@@ -25,6 +25,14 @@ function updateConfigAttribute(name, value){
 
 }
 
+function updateMemoryAllocated(value){
+    const freeMemoryMB = Math.floor(os.freemem/0.000001);
+    if(value > freeMemoryMB * 0.98){
+        throw new Error(`Not enough free memory! only ${freeMemoryMB} free of ${Math.floor(os.totalmem/0.000001)}`);
+    }
+    updateConfigAttribute("memory", value);
+}
+
 function generateConfigFile(OS=os.type(),
                             memory="1024M",
                             platform="vanilla",
@@ -51,4 +59,5 @@ module.exports = {
     getConfigAttribute,
     updateConfigAttribute,
     getConfigJSON,
+    updateMemoryAllocated,
 }
