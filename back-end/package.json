@@ -6,8 +6,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "backend": "nodemon server.js --ignore server-config.json"
   },
-  "nodemonConfig":{  
-    "ignore": ["*.json", "README"]
+  "nodemonConfig": {
+    "ignore": [
+      "*.json",
+      "README"
+    ]
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +19,7 @@
     "async-sema": "^3.1.1",
     "cors": "^2.8.5",
     "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
     "nodemon": "^3.1.9"
   }
 }
