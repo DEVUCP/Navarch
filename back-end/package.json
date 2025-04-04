@@ -4,11 +4,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "backend": "nodemon server.js --ignore server-config.json"
+    "backend": "nodemon server.js "
   },
   "nodemonConfig": {
     "ignore": [
-      "*.json",
+      "keys.json",
+      "server-config.json",
       "README"
     ]
   },
