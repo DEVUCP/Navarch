@@ -1,11 +1,20 @@
 const express = require('express');
 const cors = require('cors');
 const rateLimit = require("express-rate-limit");
+const adminRoutes = require('./routes/adminRoutes');
 const configUtils = require('./utils/configUtils')
 const serverRoutes = require('./routes/serverRoutes'); // Routes are separated
 const propertiesRoute = require('./routes/propertiesRoutes'); // Routes are separated
 const installationsRoutes = require('./routes/installationsRoutes'); // Routes are separated
 const networkingUtils = require('./utils/networkingUtils');
+const apiAccessUtils = require('./utils/apiAccessUtils');
+
+// constants
+
+const app = express();
+const port = 3001;
+const debug = configUtils.getConfigAttribute("debug");
+
 
 async function cleanup() {
     console.log('Running cleanup tasks...');
@@ -38,10 +47,24 @@ process.on('uncaughtException', async (err) => {
     process.exit(1);
 });
 
-const app = express();
-const port = 3001;
 
 // Middleware
+
+const apiKeyValidation = (req, res, next) => {
+    const apiKey = req.header('x-api-key');
+    const apiName = req.header('x-api-name');
+    if ((apiKey && 
+        apiAccessUtils.doesEntryExist(apiName, apiKey) 
+        )
+        || debug === true
+        || req.ip === "127.0.0.1") {
+        console.log("API Key Validation Passed for", req.ip);
+        next();
+    } else {
+        console.log("API Key Validation Failed for", req.ip);
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+  };
 
 const limiter = rateLimit({
     max: 10, // maximum of 10 requests per window (15 sec) 
@@ -55,26 +78,34 @@ const limiter = rateLimit({
 app.use(limiter)
 app.use(cors());
 app.use(express.json());
+app.use(apiKeyValidation);
 
 // Routes
 app.use('/server', serverRoutes);
 app.use('/installations', installationsRoutes);
 app.use('/properties', propertiesRoute);
+app.use('/admin', adminRoutes);
 
 // Default route
 app.get('/', async (req, res) => {
     res.send('<h1>Hello, Express.js Server!</h1>');
 });
 
-app.put('/close', async (req, res) =>{
-    await cleanup();
-    res.status(200).send("closed");
-    process.exit(0);
-})
+
 
 // Start the server
-app.listen(port, async () => {
+app.listen(port, "0.0.0.0" ,async () => {
+    await startServer();
+});
+
+
+async function startServer() {
+    if (!apiAccessUtils.isHostKeyGenerated()){
+        console.log("generating host key");
+        apiAccessUtils.generateHostKey();
+    }
     console.log(`port: ${port}`);
+    
     if (!configUtils.doesConfigExist()){
         configUtils.generateConfigFile();
         console.log("sever-config generated successfully")
@@ -82,11 +113,12 @@ app.listen(port, async () => {
     const ip = await networkingUtils.getIP(local=true)
     console.log("local-ip:", ip);
 
-    console.log(configUtils.getConfigAttribute("debug"));
-    if(configUtils.getConfigAttribute("debug") === false){
-        networkingUtils.forwardPort(3001, ip);
-        networkingUtils.forwardPort(3000, ip);
-        networkingUtils.forwardPort(configUtils.getConfigAttribute("port"), ip);
+    if(debug === false){
+
+        await networkingUtils.forwardPort(3001, ip);
+        await networkingUtils.forwardPort(3000, ip);
+        await networkingUtils.forwardPort(port, ip);
     }
 
-});
+
+}
