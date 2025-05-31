@@ -17,7 +17,7 @@ if [ -z "$TERMINAL" ]; then
 fi
 
 echo "Starting backend server..."
-"$TERMINAL" -- bash -c "cd ../api && npm start; exec bash"
+"$TERMINAL" -- bash -c "cd ../../api && npm start; exec bash" &
 
 echo "Starting frontend server..."
-"$TERMINAL" -- bash -c "cd ../front-end && npm start; exec bash"
+"$TERMINAL" -- bash -c "cd ../../front-end && npm start; exec bash" &

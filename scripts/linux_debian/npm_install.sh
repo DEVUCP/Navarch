@@ -1,6 +1,7 @@
 #!/bin/bash
 
 cd ..
+cd ..
 
 # Check if front-end dependencies are missing
 if [ ! -d "front-end/node_modules" ]; then
