@@ -71,8 +71,7 @@ const apiKeyValidation = (req, res, next) => {
     if ((apiKey && 
         apiAccessUtils.doesEntryExist(apiName, apiKey) 
         )
-        || debug === true
-        || req.ip === "127.0.0.1") {
+        || debug === true) {
         console.log("API Key Validation Passed for", req.ip);
         next();
     } else {
