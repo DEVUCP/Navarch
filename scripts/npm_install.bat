@@ -7,7 +7,7 @@ if not exist "front-end\node_modules" (
     cd ..
 )
 
-if not exist "back-end\node_modules" (
+if not exist "api\node_modules" (
     echo Installing back-end dependencies...
     cd back-end
     call npm install
