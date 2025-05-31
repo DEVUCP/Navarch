@@ -15,6 +15,22 @@ async function isServerOn() {
     }
 }
 
+function isEULAsigned() {
+    if (fs.existsSync(consts.eulaFilePath)){
+        if (fs.readFileSync(consts.eulaFilePath, 'utf8').includes('eula=true')) {
+            return true;
+        }
+        else
+            return false;
+    }
+    else
+        return false;
+}
+
+function signEULA() {
+    fs.writeFileSync(consts.eulaFilePath, 'eula=true');
+}
+
 function getServerlogs() {
     try {
         return fs.readFileSync(consts.serverLogsFilePath, { encoding: 'utf8', flag: 'r' })
@@ -32,7 +48,6 @@ async function runMCCommand(command) {
     } catch(error){
         console.error(error);
     }
-
 }
 
 async function killStrayServerInstance(){
@@ -49,6 +64,7 @@ async function killStrayServerInstance(){
             break;
   }
 }
+
 
 function getStrayServerInstance_WINDOWS() {
     return new Promise((resolve, reject) => {
@@ -125,7 +141,7 @@ async function killStrayServerInstance_WINDOWS() {
 
 function getStrayServerInstance_LINUX() {
     return new Promise((resolve, reject) => {
-        // Use 'ps' to find Java processes
+        // Step 1: Get all Java process PIDs
         const ps = spawn('ps', ['-C', 'java', '-o', 'pid=']);
 
         let output = '';
@@ -139,37 +155,48 @@ function getStrayServerInstance_LINUX() {
 
         ps.on('close', (code) => {
             if (code !== 0) {
-                reject(`ps command failed with code ${code}`);
-            } else if (output.trim()) {
-                // Use 'ss' to find processes listening on port 25565
-                const ss = spawn('ss', ['-tlnp']);
+                return reject(`ps command failed with code ${code}`);
+            }
 
-                let ssOutput = '';
-                ss.stdout.on('data', (data) => {
-                    ssOutput += data.toString();
-                });
+            const javaPIDs = output.trim().split('\n').map(line => line.trim()).filter(Boolean);
+            if (javaPIDs.length === 0) {
+                return reject('No Java processes found.');
+            }
 
-                ss.stderr.on('data', (data) => {
-                    reject(`Error in ss: ${data.toString()}`);
-                });
+            // Step 2: Check for listeners on the target port
+            const ss = spawn('ss', ['-tlnp']);
+            let ssOutput = '';
 
-                ss.on('close', (code) => {
-                    if (code !== 0) {
-                        reject(`ss command failed with code ${code}`);
-                    } else {
-                        // Find the process listening on port 25565
-                        const port = getConfigAttribute("port");
-                        const regex = new RegExp(`TCP\\s+.*:${port}\\s+.*\\s+LISTENING\\s+(\\d+)`, 'i');
-                        const match = netstatOutput.match(regex);                        if (match) {
-                            resolve(parseInt(match[1]));
-                        } else {
-                            reject(`No Minecraft server found on port ${port}`);
+            ss.stdout.on('data', (data) => {
+                ssOutput += data.toString();
+            });
+
+            ss.stderr.on('data', (data) => {
+                reject(`Error in ss: ${data.toString()}`);
+            });
+
+            ss.on('close', (code) => {
+                if (code !== 0) {
+                    return reject(`ss command failed with code ${code}`);
+                }
+
+                const port = getConfigAttribute("mc_port"); // assumed defined
+                const lines = ssOutput.split('\n');
+
+                for (const line of lines) {
+                    if (line.includes(`:${port}`) && line.includes('LISTEN') && line.includes('pid=')) {
+                        const pidMatch = line.match(/pid=(\d+)/);
+                        if (pidMatch) {
+                            const pid = pidMatch[1];
+                            if (javaPIDs.includes(pid)) {
+                                return resolve(parseInt(pid, 10));
+                            }
                         }
                     }
-                });
-            } else {
-                reject('No Minecraft server found with java process');
-            }
+                }
+
+                reject(`No Java process found listening on port ${port}`);
+            });
         });
     });
 }
@@ -260,4 +287,6 @@ module.exports = {
     getServerlogs,
     runMCCommand,
     killStrayServerInstance,
+    signEULA,
+    isEULAsigned,
 };
