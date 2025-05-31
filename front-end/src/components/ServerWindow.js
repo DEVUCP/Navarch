@@ -14,7 +14,7 @@ function ServerWindow(){
 
   return(
     <div className={styles.container}>
-
+{/* 
       <div className={styles.subContainer}>
         <TabButtons taboption={setTabOption}></TabButtons>
         <div className={styles.subContainer}>
@@ -28,13 +28,13 @@ function ServerWindow(){
             version tab placeholder
           </div>
         </div>
-      </div>
+      </div> */}
 
 
       <div className={styles.subContainer}>
         <Console></Console>
         <StartStopBtn></StartStopBtn>
-        <VersionSelectDropdown></VersionSelectDropdown>
+        {/* <VersionSelectDropdown></VersionSelectDropdown> */}
       </div>
     </div>
   );
