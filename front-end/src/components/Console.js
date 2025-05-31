@@ -9,11 +9,14 @@ function Console(){
     useEffect(() => {
         const interval = setInterval( async () => {
             if(await getServerStatus()){
-            const response = await fetch("http://156.213.133.235:3001/server/console-text")
+            const response = await fetch("http://localhost:3001/server/console-text")
             const text = await response.text()
             if(response.ok){
                 setConsoleText(text);
             }}
+            else{
+                setConsoleText("The server is offline...");
+            }
         }, 2000)
         return () => clearInterval(interval);
     }, [])
