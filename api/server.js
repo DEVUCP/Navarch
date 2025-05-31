@@ -16,16 +16,9 @@ const propertiesRoute = require('./routes/propertiesRoutes'); // Routes are sepa
 const installationsRoutes = require('./routes/installationsRoutes'); // Routes are separated
 
 // Util files
-const networkingUtils = require('./utils/networkingUtils');
-const apiAccessUtils = require('./utils/apiAccessUtils');
-const cleaner = require('./cleaner');
-
-// constants
-
-const port = 3001;
-const debug = configUtils.getConfigAttribute("debug");
-
-
+const starter =  require('./starter'); 
+const cleaner = require('./cleaner'); //  [ DO NOT REMOVE] Not explicitly used, but implicitly used.
+// uses process object to catch and handle exit signals and cleanup tasks
 
 // Routes
 app.use('/server', serverRoutes);
@@ -33,41 +26,15 @@ app.use('/installations', installationsRoutes);
 app.use('/properties', propertiesRoute);
 app.use('/admin', adminRoutes);
 
-// Default route
 app.get('/ping', async (req, res) => {
-    res.send('pong');
+    res.send(`pong from ${await require("./utils/networkingUtils").getIP(local=false)}`);
 });
 
+const api_port = configUtils.getConfigAttribute("api_port");
+const mc_port = configUtils.getConfigAttribute("mc_port");
 
 
 // Start the server
-app.listen(port, "0.0.0.0" ,async () => {
-    await startServer();
+app.listen(api_port, "0.0.0.0" ,async () => {
+    await starter.startServer(api_port, mc_port);
 });
-
-
-async function startServer() {
-    if (!apiAccessUtils.isHostKeyGenerated()){
-        console.log("generating host key");
-        apiAccessUtils.generateHostKey();
-    }
-    console.log(`port: ${port}`);
-    
-    if (!configUtils.doesConfigExist()){
-        configUtils.generateConfigFile();
-        console.log("sever-config generated successfully")
-    }
-    const ip = await networkingUtils.getIP(local=true)
-    console.log("local-ip:", ip);
-
-    if(debug === false){
-
-        await networkingUtils.forwardPort(3001, ip);
-        await networkingUtils.forwardPort(3000, ip);
-        await networkingUtils.forwardPort(port, ip);
-    }
-
-    console.log("====== API STARTED! ======")
-
-
-}
