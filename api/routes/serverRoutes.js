@@ -61,7 +61,12 @@ router.put('/start', async (req, res) => {
     try {
         if (await serverUtils.isServerOn()) {
             res.status(400).send('Server is already running.');
+            return;
         }
+        if (!serverUtils.isEULAsigned()){
+            res.status(400).send('EULA must be signed.');
+            return;
+        } 
 
         await serverUtils.startServer();
         res.send('Server started.');
@@ -80,13 +85,29 @@ router.put('/stop', async (req, res) => {
         if (!(await serverUtils.isServerOn())) {
             return res.status(400).send('Server is not running.');
         }
-
-        await serverUtils.killStrayServerInstance();
+            try {
+                await serverUtils.runMCCommand("stop");
+            } catch {
+                await serverUtils.killStrayServerInstance();
+            }
+            
         res.status(200).send('Server stopped.');
     } catch (error) {
         res.status(500).send(`Failed to stop server: ${error}`);
     } finally{
         startStopSema.release();
+    }
+});
+
+router.put('/sign-eula', async (req, res) => {
+    try {
+        if (serverUtils.isEULAsigned()){
+            res.status(400).send('EULA is already signed.');
+        }
+        serverUtils.signEULA();
+        res.status(200).send('EULA signed.');
+    } catch (error) {
+        res.status(500).send(`Failed to sign EULA: ${error}`);
     }
 });
 
