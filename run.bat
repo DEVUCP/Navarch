@@ -2,7 +2,7 @@
 
 echo Running setup scripts...
 
-cd scripts
+cd scripts/windows
 call install_dependencies.bat
 
 call npm_install.bat
