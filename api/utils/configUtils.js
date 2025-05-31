@@ -7,7 +7,8 @@ const defaultConfig =  {
     "memory": "1024M",
     "platform": "vanilla",
     "version": "1.21.4",
-    "port": 3002,
+    "mc_port": 25565,
+    "api_port": 3001,
     "debug": false
 
 }
@@ -54,16 +55,18 @@ function generateConfigFile(OS=os.type(),
                             memory="1024M",
                             platform="vanilla",
                             version="1.21.4",
-                            port=25565,
+                            mc_port=25565,
+                            api_port=3001,
                             debug=false,
                         ){
     let config = {
-        os: OS,
-        memory: memory,
-        platform: platform,
-        version: version,
-        port: port,
-        debug: debug
+        os: defaultConfig.os,
+        memory: defaultConfig.memory,
+        platform: defaultConfig.platform,
+        version: defaultConfig.version,
+        mc_port: defaultConfig.mc_port,
+        api_port: defaultConfig.api_port,
+        debug: defaultConfig.debug
     };
     const jsonConfig = JSON.stringify(config, null, 4);
     fs.writeFileSync("./server-config.json", jsonConfig);
