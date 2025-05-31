@@ -91,9 +91,12 @@ async function getIP_WINDOWS(local) {
       const localIpMatch = stdout.match(localIpRegex);
       return localIpMatch ? localIpMatch[1] : 'Not found';
     } else {
-      const publicIpRegex = /ExternalIPAddress = (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/;
-      const publicIpMatch = stdout.match(publicIpRegex);
-      return publicIpMatch ? publicIpMatch[1] : 'Not found';
+      const response = await fetch("https://ifconfig.me");
+      const publicIP = await response.text();
+      return publicIP;
+      // const publicIpRegex = /ExternalIPAddress = (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/;
+      // const publicIpMatch = stdout.match(publicIpRegex);
+      // return publicIpMatch ? publicIpMatch[1] : 'Not found';
     }
   } catch (error) {
     console.error(`Error getting IP: ${error.message}`);
