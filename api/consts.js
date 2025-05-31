@@ -11,6 +11,7 @@ const keysJSONPath = './keys.json';
 
 
 const configFilePath = "./server-config.json";
+const eulaFilePath = `${serverDirectory}/eula.txt`;
 const upnpcPath = '/upnpc';
 
 
@@ -27,4 +28,5 @@ module.exports = {
     serverBannedPlayersPath,
     serverBannedIPsPath,
     keysJSONPath,
+    eulaFilePath,
 };
