@@ -16,8 +16,19 @@ const port = 3001;
 const debug = configUtils.getConfigAttribute("debug");
 
 
+let cleanup_done = false;
+
+
 async function cleanup() {
-    console.log('Running cleanup tasks...');
+
+    if(debug){
+        console.log("\nDebug mode is turned on\n Skipping cleanup tasks...\n if you don't intend this, change 'debug' from true to false in server-config.json");
+        console.log("====== API TERMINATED! ======");
+        cleanup_done = true;
+        return;
+    }
+
+    console.log('\nRunning cleanup tasks...');
 
     console.log('Removing port mapping ...');
     await networkingUtils.removePortMapping(3000);
@@ -29,7 +40,11 @@ async function cleanup() {
     await networkingUtils.removePortMapping(configUtils.getConfigAttribute("port"));
 }
 
-process.on('exit', cleanup);
+process.on('exit', () => {
+    if (!cleanup_done) {
+        cleanup();
+    }
+});
 
 process.on('SIGINT', async () => {
     await cleanup();
@@ -87,8 +102,8 @@ app.use('/properties', propertiesRoute);
 app.use('/admin', adminRoutes);
 
 // Default route
-app.get('/', async (req, res) => {
-    res.send('<h1>Hello, Express.js Server!</h1>');
+app.get('/ping', async (req, res) => {
+    res.send('pong');
 });
 
 
@@ -119,6 +134,8 @@ async function startServer() {
         await networkingUtils.forwardPort(3000, ip);
         await networkingUtils.forwardPort(port, ip);
     }
+
+    console.log("====== API STARTED! ======")
 
 
 }
