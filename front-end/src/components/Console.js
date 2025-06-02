@@ -9,7 +9,7 @@ function Console(){
     useEffect(() => {
         const interval = setInterval( async () => {
             if(await getServerStatus()){
-            const response = await fetch("http://localhost:3001/server/console-text")
+            const response = await fetch(`http://${localStorage.getItem("ipAddress")}:${localStorage.getItem("port")}/server/console-text`)
             const text = await response.text()
             if(response.ok){
                 setConsoleText(text);

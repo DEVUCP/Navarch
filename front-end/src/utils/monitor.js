@@ -6,7 +6,7 @@ export const useServerStatus = () => {
     useEffect(() => {
         const interval = setInterval(async () => {
             try {
-                const response = await fetch("http://localhost:3001/server/check-server");
+                const response = await fetch(`http://${localStorage.getItem("ipAddress")}:${localStorage.getItem("port")}/server/check-server`);
                 const data = await response.json();
                 setServerStatus(data);
             } catch (error) {
@@ -23,7 +23,7 @@ export const useServerStatus = () => {
 
 export const getServerStatus = async () => {
     try {
-        const response = await fetch("http://localhost:3001/server/check-server");
+        const response = await fetch(`http://${localStorage.getItem("ipAddress")}:${localStorage.getItem("port")}/server/check-server`);
         const data = await response.json();
         return data;
     } catch (error) {

@@ -34,6 +34,18 @@ function ServerWindow(){
       <div className={styles.subContainer}>
         <Console></Console>
         <StartStopBtn></StartStopBtn>
+                <button 
+                  className="btn btn-danger" 
+                  onClick={() => {
+                    localStorage.clear();
+                    window.location.reload();
+                  }}
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Clears all saved data and reloads the page"
+                >
+                  Reset
+                </button>
         {/* <VersionSelectDropdown></VersionSelectDropdown> */}
       </div>
     </div>

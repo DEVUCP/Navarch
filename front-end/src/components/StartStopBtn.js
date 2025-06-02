@@ -15,11 +15,11 @@ function StartStopBtn(){
         async function startStopServer(){
             try{
             if(serverStatus){
-                await fetch("http://localhost:3001/server/stop", {method: "PUT"})
+                await fetch(`http://${localStorage.getItem("ipAddress")}:${localStorage.getItem("port")}/server/stop`, {method: "PUT"})
                 setServerStatus(false);    
             }
             else{
-                const response = await fetch("http://localhost:3001/server/start", {method: "PUT"})
+                const response = await fetch(`http://${localStorage.getItem("ipAddress")}:${localStorage.getItem("port")}/server/start`, {method: "PUT"})
                 if ((await response.text()).includes("EULA")){
                     handleOpenModal();
                     return;
