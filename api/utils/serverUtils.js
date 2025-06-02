@@ -243,7 +243,6 @@ function validateMemory(){
         return false;
     }
 }
-
 async function startServer() {
     if(!validateMemory()){
         throw new Error("Not enough memory for server to run");
@@ -272,6 +271,33 @@ async function startServer() {
     });
 }
 
+async function startServerWithScript() {
+    if(!validateMemory()){
+        throw new Error("Not enough memory for server to run");
+    }
+
+    serverProcess = spawn('sh', ['start.sh'], {
+        cwd: consts.serverDirectory,
+        stdio: ['pipe', 'pipe', 'pipe'],
+    });
+    
+    fs.writeFileSync(consts.serverLogsFilePath, '');
+
+    serverProcess.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+        fs.appendFileSync(consts.serverLogsFilePath, data);
+    });
+
+    serverProcess.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+    });
+
+    serverProcess.on('close', (code) => {
+        console.log(`Server process exited with code ${code}`);
+    });
+}
+
+
 async function doesServerJarAlreadyExist() {
     return fs.existsSync("../server/server.jar");
 }
@@ -289,4 +315,5 @@ module.exports = {
     killStrayServerInstance,
     signEULA,
     isEULAsigned,
+    startServerWithScript,
 };

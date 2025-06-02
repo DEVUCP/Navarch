@@ -68,7 +68,7 @@ router.put('/start', async (req, res) => {
             return;
         } 
 
-        await serverUtils.startServer();
+        await serverUtils.startServerWithScript();
         res.send('Server started.');
     } catch (error) {
         res.status(500).send(`Error starting server: ${error}`);
