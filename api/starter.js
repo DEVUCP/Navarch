@@ -1,13 +1,19 @@
 const networkingUtils = require('./utils/networkingUtils');
 const apiAccessUtils = require('./utils/apiAccessUtils');
 const configUtils = require('./utils/configUtils')
+const fs = require('fs');
+const consts = require('./consts');
 
 const debug = configUtils.getConfigAttribute("debug");
 
 
 async function startServer(api_port, mc_port) {
-    if (!apiAccessUtils.isHostKeyGenerated()){
-        console.log("generating host key");
+    if (fs.existsSync(consts.serverLogsFilePath)) {
+        console.log("deleting old server log");
+        fs.rmSync(consts.serverLogsFilePath, { force: true });
+    }
+
+    if (!apiAccessUtils.isHostKeyGenerated()){        console.log("generating host key");
         apiAccessUtils.generateHostKey();
     }
     console.log(`port: ${api_port}`);
