@@ -2,7 +2,25 @@
     background-color: rgb(36, 36, 36);
 
     width: 100%;
-    padding-left: 2em;
+    padding-top: 1em;
+    height: 30em;
+    overflow-y: auto;
+    overflow-x: auto;      
+    display: flex;
+    flex-direction: column;
+
+    outline: 0.25em solid black;
+    border-radius: 1em;
+    padding-left: 0.2em;
+    padding-bottom: 0.2em;
+    
+        
+}
+.consoleTextBox{
+    background-color: rgb(36, 36, 36);
+
+    width: 100%;
+    padding-left: 1em;
     padding-top: 1em;
     height: 30em;
     overflow-y: auto;
@@ -11,11 +29,24 @@
     flex-direction: column-reverse;
     padding-bottom: 2em;
 
-    outline: 0.25em solid black;
-    border-radius: 1em;
-    
-        
 }
+
+
+.consoleInputField{
+  
+  background-color: rgb(51, 51, 51);
+  padding: 0.25em 0.25em 0.25em 0.25em;
+  border-radius: 1em;
+  width: 97%;
+  color: aliceblue;
+}
+.consoleInputButton{
+    background-color: rgb(51, 51, 51);
+    padding: 0.25em 0.25em 0.25em 0.25em;
+    border-radius: 1em;
+    color: aliceblue;
+}
+
 .cpopup{
   background-color: #292929be;
   min-height: 20em;
