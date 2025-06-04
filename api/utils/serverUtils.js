@@ -26,7 +26,7 @@ function deleteServerOutput(){
 function isServerStarting(){
 
     const serverLogs = getServerlogs();
-    if(serverLogs == null){
+    if(serverLogs == null || serverLogs.includes("All dimensions are saved")){
         return 0;
     }
     if(serverLogs.includes("Starting") && !serverLogs.includes("Done")){
@@ -67,8 +67,7 @@ function getServerlogs() {
 
 async function runMCCommand(command) {
     try{
-        deleteServerOutput();
-        serverStatus = 0;
+
         if(!isServerOn()){
             throw new Error("Can't run command, server is offline.")
         }

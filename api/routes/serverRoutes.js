@@ -88,7 +88,7 @@ router.put('/start', async (req, res) => {
         res.status(500).send(`Error starting server: ${error}`);
     } finally {
         startStopSema.release()
-        console.log("startstop sema RELEASED")
+        // console.log("startstop sema RELEASED")
     }
 });
 
@@ -99,10 +99,15 @@ router.put('/stop', async (req, res) => {
         if (!(await serverUtils.isServerOn())) {
             return res.status(400).send('Server is not running.');
         }
+        
             try {
                 await serverUtils.runMCCommand("stop");
             } catch {
                 await serverUtils.killStrayServerInstance();
+            }
+            finally {
+                serverUtils.deleteServerOutput();
+                serverStatus = 0;
             }
             
         res.status(200).send('Server stopped.');
