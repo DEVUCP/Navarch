@@ -67,7 +67,7 @@ function Console(){
             <input
                 type="text"
                 value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
+                onChange={(e) => setInputText(e.target.value.replace(/[/\\]/g, ''))}
                 placeholder="Enter command..."
                 className={styles.consoleInputField}
             />
