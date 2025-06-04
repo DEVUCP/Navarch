@@ -11,12 +11,16 @@ function Console(){
     
     useEffect(() => {
         const interval = setInterval( async () => {
-            if(await getServerStatus()){
+            if(await getServerStatus() === 1 || await getServerStatus() === 2){
             setIsSendingCommand(true);
             const response = await fetch(`http://${localStorage.getItem("ipAddress")}:${localStorage.getItem("port")}/server/console-text`)
             const text = await response.text()
             if(response.ok){
-                setConsoleText(text);
+                if(text === ""){
+                    setConsoleText("Starting! Please wait...");
+                }else{
+                    setConsoleText(text);
+                }
             }}
             else{
                 setConsoleText("The server is offline...");
