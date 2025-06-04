@@ -5,13 +5,39 @@ const {freemem} = require('os');
 const {getConfigAttribute} = require("./configUtils");
 
 let serverProcess = null;
+let serverStatus = 0;
 
 async function isServerOn() {
     try {
         const serverPID = getConfigAttribute("os") != "Linux" ? await getStrayServerInstance_WINDOWS() : await getStrayServerInstance_LINUX();
-        return !!serverPID;
+        return !!serverPID || serverStatus == 1;
     } catch (error) {
         return false;
+    }
+}
+function deleteServerOutput(){
+    try {
+        fs.rmSync(consts.serverLogsFilePath, { force: true });
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+function isServerStarting(){
+
+    const serverLogs = getServerlogs();
+    if(serverLogs == null){
+        return 0;
+    }
+    if(serverLogs.includes("Starting") && !serverLogs.includes("Done")){
+        serverStatus = 2;
+        return serverStatus;
+    }else if(serverLogs.includes("Done")){
+        serverStatus = 1;
+        return serverStatus;
+    }
+    else{
+        return 0;
     }
 }
 
@@ -41,6 +67,8 @@ function getServerlogs() {
 
 async function runMCCommand(command) {
     try{
+        deleteServerOutput();
+        serverStatus = 0;
         if(!isServerOn()){
             throw new Error("Can't run command, server is offline.")
         }
@@ -54,9 +82,13 @@ async function killStrayServerInstance(){
     switch(getConfigAttribute("os")){
         case "Windows_NT":
             await killStrayServerInstance_WINDOWS();
+            serverStatus = 0;
+            deleteServerOutput();
             break;
         case "Linux":
             await killStrayServerInstance_LINUX();
+            serverStatus = 0;
+            deleteServerOutput();
             break;
 
         case _:
@@ -282,7 +314,6 @@ async function startServerWithScript() {
     });
     
     fs.writeFileSync(consts.serverLogsFilePath, '');
-
     serverProcess.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);
         fs.appendFileSync(consts.serverLogsFilePath, data);
@@ -309,6 +340,7 @@ module.exports = {
     killStrayServerInstance_WINDOWS,
     killStrayServerInstance_LINUX,
     startServer,
+    isServerStarting,
     doesServerJarAlreadyExist,
     getServerlogs,
     runMCCommand,
@@ -316,4 +348,5 @@ module.exports = {
     signEULA,
     isEULAsigned,
     startServerWithScript,
+    serverStatus,
 };

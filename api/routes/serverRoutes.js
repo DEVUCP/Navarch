@@ -46,8 +46,20 @@ router.get('/check-exist', (req, res) => {
 // Route to check if the server is running
 router.get('/check-server', async (req, res) => {
     try {
-        const isRunning = await serverUtils.isServerOn();
-        res.status(200).send(isRunning);
+        const check = serverUtils.isServerStarting();
+        switch(check) {
+            case 2:
+                // console.log("Server is starting...");
+                res.status(200).send("2"); // 2 means starting
+                break;
+            case 1:
+                // console.log("Server is running...");
+                res.status(200).send("1"); // 1 means On
+                break;
+            default:
+                // console.log("Server is offline...");
+                res.status(200).send("0"); // 0 means Off
+        }
     } catch (error) {
         res.status(500).send(`Error checking server: ${error}`);
     }
@@ -67,10 +79,12 @@ router.put('/start', async (req, res) => {
             res.status(400).send('EULA must be signed.');
             return;
         } 
+        serverUtils.serverStatus = 2;
 
         await serverUtils.startServerWithScript();
         res.send('Server started.');
     } catch (error) {
+        serverUtils.serverStatus = 0;
         res.status(500).send(`Error starting server: ${error}`);
     } finally {
         startStopSema.release()
