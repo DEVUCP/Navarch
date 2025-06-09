@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import './styles/theme.css';
 import App from './App';
 import { useState } from 'react';
 import { Box, TextField, Button } from '@mui/material';
@@ -13,9 +14,9 @@ const IpForm = () => {
   async function checkURL(ipAddress, port) {
     try {
       setCheckingURL(true);
-      const response = await fetch(`http://${ipAddress}:${port}/ping`);
+      const isIPv4 = /^(\d{1,3}\.){3}\d{1,3}$/.test(ipAddress);
+      const response = await fetch(`http://${isIPv4 ? ipAddress : `[${ipAddress}]`}:${port}/ping`);
       setCheckingURL(false);
-      console.log(response.ok);
       if (response.ok) {
         return true;
       } else {

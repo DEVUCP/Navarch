@@ -2,6 +2,7 @@ const express = require('express');
 const middleware = require('./middleware/middleware');
 
 const app = express();
+const http = require('http');
 
 app.use(middleware.cors());
 app.use(middleware.limiter)
@@ -26,15 +27,26 @@ app.use('/installations', installationsRoutes);
 app.use('/properties', propertiesRoute);
 app.use('/admin', adminRoutes);
 
+// app.get('/ping', async (req, res) => {
+//     res.send(`pong from ${await require("./utils/networkingUtils").getIP(local=false)}`);
+// });
+
 app.get('/ping', async (req, res) => {
-    res.send(`pong from ${await require("./utils/networkingUtils").getIP(local=false)}`);
+    res.send(`pong`);
 });
+
 
 const api_port = configUtils.getConfigAttribute("api_port");
 const mc_port = configUtils.getConfigAttribute("mc_port");
 
 
-// Start the server
-app.listen(api_port, "0.0.0.0" ,async () => {
-    await starter.startServer(api_port, mc_port);
+// Listen on IPv4
+http.createServer(app).listen(api_port, '0.0.0.0', () => {
+  console.log(`Listening on IPv4 0.0.0.0:${api_port}`);
+});
+
+// Listen on IPv6
+http.createServer(app).listen(api_port, '::', async () => {
+  console.log(`Listening on IPv6 [::]:${api_port}`);
+  await starter.startServer(api_port, mc_port);
 });
