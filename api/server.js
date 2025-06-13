@@ -40,10 +40,10 @@ const api_port = configUtils.getConfigAttribute("api_port");
 const mc_port = configUtils.getConfigAttribute("mc_port");
 
 
-// Listen on IPv4
-http.createServer(app).listen(api_port, '0.0.0.0', () => {
-  console.log(`Listening on IPv4 0.0.0.0:${api_port}`);
-});
+// // Listen on IPv4
+// http.createServer(app).listen(api_port, '0.0.0.0', () => {
+//   console.log(`Listening on IPv4 0.0.0.0:${api_port}`);
+// });
 
 // Listen on IPv6
 http.createServer(app).listen(api_port, '::', async () => {
