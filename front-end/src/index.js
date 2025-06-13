@@ -14,7 +14,9 @@ const IpForm = () => {
   async function checkURL(ipAddress, port) {
     try {
       setCheckingURL(true);
-      const isIPv4 = /^(\d{1,3}\.){3}\d{1,3}$/.test(ipAddress);
+      const isIPv4 = ipAddress !== "localhost" ? /^(\d{1,3}\.){3}\d{1,3}$/.test(ipAddress) : "localhost";
+
+      // console.log(`http://${isIPv4 ? ipAddress : `[${ipAddress}]`}:${port}/ping`);
       const response = await fetch(`http://${isIPv4 ? ipAddress : `[${ipAddress}]`}:${port}/ping`);
       setCheckingURL(false);
       if (response.ok) {
