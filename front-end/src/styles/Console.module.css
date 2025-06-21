@@ -1,5 +1,5 @@
 .viewbox{
-    background-color: rgb(36, 36, 36);
+    background-color: var(--secondary);
 
     width: 100%;
     padding-top: 1em;
@@ -9,7 +9,7 @@
     display: flex;
     flex-direction: column;
 
-    outline: 0.25em solid black;
+    outline: 0.25em solid var(--dark-third);
     border-radius: 1em;
     padding-left: 0.2em;
     padding-bottom: 0.2em;
@@ -17,7 +17,7 @@
         
 }
 .consoleTextBox{
-    background-color: rgb(36, 36, 36);
+    background-color: var(--secondary);
 
     width: 100%;
     padding-left: 1em;
@@ -28,23 +28,24 @@
     display: flex;
     flex-direction: column-reverse;
     padding-bottom: 2em;
+    color: white;
 
 }
 
 
 .consoleInputField{
   
-  background-color: rgb(51, 51, 51);
+  background-color: var(--light-secondary);
   padding: 0.25em 0.25em 0.25em 0.25em;
   border-radius: 1em;
-  width: 97%;
-  color: aliceblue;
+  width: 95%;
+  color: white;
 }
 .consoleInputButton{
-    background-color: rgb(51, 51, 51);
+    background-color: var(--light-secondary);
     padding: 0.25em 0.25em 0.25em 0.25em;
     border-radius: 1em;
-    color: aliceblue;
+    color: black;
 }
 
 .cpopup{
