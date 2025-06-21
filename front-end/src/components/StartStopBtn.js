@@ -81,7 +81,7 @@ const SimpleModal = forwardRef((props, ref) => {
 
   const handleAccept = async () => {
     alert("Accepted!");
-    await fetch("http://localhost:3001/server/sign-eula", {method: "PUT"})
+    await fetch(`http://${localStorage.getItem("ipAddress")}:${localStorage.getItem("port")}/server/sign-eula`, {method: "PUT"})
     dialogRef.current?.close();
   };
 
