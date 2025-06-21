@@ -14,9 +14,6 @@ jobs:
   test-api-linux:
     name: API Test (Linux)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: api
 
     strategy:
       matrix:
@@ -30,17 +27,15 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: |
-            api/package-lock.json
+          cache-dependency-path: api/package-lock.json
       - run: npm ci
+        working-directory: api
       - run: npm test
+        working-directory: api
 
   test-frontend-linux:
     name: Frontend Test (Linux)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
 
     strategy:
       matrix:
@@ -54,17 +49,15 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: |
-            frontend/package-lock.json
+          cache-dependency-path: frontend/package-lock.json
       - run: npm ci
+        working-directory: frontend
       - run: npm test
+        working-directory: frontend
 
   test-api-windows:
     name: API Test (Windows)
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: api
 
     strategy:
       matrix:
@@ -78,17 +71,15 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: |
-            api/package-lock.json
+          cache-dependency-path: api/package-lock.json
       - run: npm ci
+        working-directory: api
       - run: npm test
+        working-directory: api
 
   test-frontend-windows:
     name: Frontend Test (Windows)
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: frontend
 
     strategy:
       matrix:
@@ -102,7 +93,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: |
-            frontend/package-lock.json
+          cache-dependency-path: frontend/package-lock.json
       - run: npm ci
+        working-directory: frontend
       - run: npm test
+        working-directory: frontend
