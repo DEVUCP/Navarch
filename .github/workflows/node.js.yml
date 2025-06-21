@@ -43,7 +43,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - run: ls -l frontend/package-lock.json
+      - run: ls -l front-end/package-lock.json
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
