@@ -49,11 +49,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: front-end/package-lock.json
       - run: npm ci
-        working-directory: frontend
+        working-directory: front-end
       - run: npm test
-        working-directory: frontend
+        working-directory: front-end
 
   test-api-windows:
     name: API Test (Windows)
@@ -87,14 +87,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - run: dir frontend\package-lock.json
+      - run: dir front-end\package-lock.json
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: front-end/package-lock.json
       - run: npm ci
-        working-directory: frontend
+        working-directory: front-end
       - run: npm test
-        working-directory: frontend
+        working-directory: front-end
