@@ -1,7 +1,7 @@
 
 
 .App {
-  background-color: rgb(41, 41, 41);
+  background-color: var(--third);
   display: flex; /* Add this to center the container */
   flex-direction: column;
   align-items: center;
