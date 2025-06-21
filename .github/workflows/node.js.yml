@@ -24,12 +24,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - run: ls -l api/package-lock.json
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: api/package-lock.json
+          cache-dependency-path: |
+            api/package-lock.json
       - run: npm ci
       - run: npm test
 
@@ -52,8 +54,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-        
+          cache-dependency-path: |
+            frontend/package-lock.json
       - run: npm ci
       - run: npm test
 
@@ -70,12 +72,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - run: dir api\package-lock.json
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: api/package-lock.json
+          cache-dependency-path: |
+            api/package-lock.json
       - run: npm ci
       - run: npm test
 
@@ -92,11 +96,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - run: dir frontend\package-lock.json
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: |
+            frontend/package-lock.json
       - run: npm ci
       - run: npm test
