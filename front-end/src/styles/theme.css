@@ -1,0 +1,17 @@
+/* theme.css */
+:root {
+    --primary: #1e1e1e;
+    --secondary: #2a4349;
+    --light-secondary: #426B69;
+    --third: #383838;
+    --dark-third: #1212122;
+    --element: #8BB174;
+    --light-element: #B5CA8D;
+    --text-color: #000000;
+}
+
+[data-theme='dark'] {
+  --primary-color: #9b59b6;
+  --background-color: #1e1e1e;
+  --text-color: #f0f0f0;
+}
