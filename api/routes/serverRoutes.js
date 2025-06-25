@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const serverUtils = require('../utils/serverUtils');
 const { Sema } = require('async-sema');
+const configUtils = require('../utils/configUtils');
 
 const consoleSema = new Sema(1);
 
@@ -81,8 +82,13 @@ router.put('/start', async (req, res) => {
         } 
         serverUtils.serverStatus = 2;
 
-        await serverUtils.startServerWithScript();
+        if( configUtils.getConfigAttribute("start_with_script") ){
+            await serverUtils.startServerWithScript();
+        }else{
+            await serverUtils.startServer();
+        }
         res.send('Server started.');
+        
     } catch (error) {
         serverUtils.serverStatus = 0;
         res.status(500).send(`Error starting server: ${error}`);
