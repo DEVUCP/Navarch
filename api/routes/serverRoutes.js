@@ -1,23 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const serverUtils = require('../utils/serverUtils');
+const { runCommand, startServer } = require('../controllers/server.controller');
 const { Sema } = require('async-sema');
 const configUtils = require('../utils/configUtils');
 
 const consoleSema = new Sema(1);
 
-router.put('/console/run/:command', async (req, res) => {
-    await consoleSema.acquire();
-    try{
-        await serverUtils.runMCCommand(req.params.command);
-        res.status(200).send("done");
-    }catch(error){
-        console.error(error)
-        res.status(500).send("error.. "+error.message);
-    }finally{
-        consoleSema.release();
-    }
-})
+router.put('/console/run/:command', runCommand);
 
 router.get('/console-text', async (req, res) =>{
     try {
@@ -69,34 +59,7 @@ router.get('/check-server', async (req, res) => {
 const startStopSema = new Sema(1);
 
 // Route to start the server
-router.put('/start', async (req, res) => {
-    await startStopSema.acquire();
-    try {
-        if (await serverUtils.isServerOn()) {
-            res.status(400).send('Server is already running.');
-            return;
-        }
-        if (!serverUtils.isEULAsigned()){
-            res.status(400).send('EULA must be signed.');
-            return;
-        } 
-        serverUtils.serverStatus = 2;
-
-        if( configUtils.getConfigAttribute("start_with_script") ){
-            await serverUtils.startServerWithScript();
-        }else{
-            await serverUtils.startServer();
-        }
-        res.send('Server started.');
-        
-    } catch (error) {
-        serverUtils.serverStatus = 0;
-        res.status(500).send(`Error starting server: ${error}`);
-    } finally {
-        startStopSema.release()
-        // console.log("startstop sema RELEASED")
-    }
-});
+router.put('/start', startServer);
 
 // Route to stop the server
 router.put('/stop', async (req, res) => {
