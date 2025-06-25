@@ -3,6 +3,7 @@ const fs = require('fs');
 const consts = require("../consts");
 const {freemem} = require('os');
 const {getConfigAttribute} = require("./configUtils");
+const path = require('path');
 
 let serverProcess = null;
 let serverStatus = 0;
@@ -306,7 +307,11 @@ async function startServerWithScript() {
     if(!validateMemory()){
         throw new Error("Not enough memory for server to run");
     }
-
+    try{
+        if (!fs.existsSync(path.join(consts.serverDirectory, 'start.sh'))) {
+                throw new Error("start.sh script not found in server directory\n If you don't intend on using a script, set start_server_with_script to false in server-config.json");
+        }
+    
     serverProcess = spawn('sh', ['start.sh'], {
         cwd: consts.serverDirectory,
         stdio: ['pipe', 'pipe', 'pipe'],
@@ -325,6 +330,11 @@ async function startServerWithScript() {
     serverProcess.on('close', (code) => {
         console.log(`Server process exited with code ${code}`);
     });
+
+
+    }catch(error){
+        throw new Error(error);
+    }
 }
 
 
