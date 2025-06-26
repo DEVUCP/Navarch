@@ -1,12 +1,9 @@
-
 let cleanup_done = false;
 const networkingUtils = require('./utils/networkingUtils');
 const configUtils = require('./utils/configUtils');
 const debug = configUtils.getConfigAttribute("debug");
 
-
 async function cleanup() {
-
     if(debug){
         console.log("\nDebug mode is turned on\n Skipping cleanup tasks...\n if you don't intend this, change 'debug' from true to false in server-config.json");
         console.log("====== API TERMINATED! ======");
@@ -27,20 +24,17 @@ async function cleanup() {
 }
 
 process.on('exit', () => {
-    if (!cleanup_done) {
+    if (!cleanup_done) 
         cleanup();
-    }
 });
 
-process.on('SIGINT', async () => {
+async function handleExit() {
     await cleanup();
     process.exit(0);
-});
+}
 
-process.on('SIGTERM', async () => {
-    await cleanup();
-    process.exit(0);
-});
+process.on('SIGINT', handleExit);
+process.on('SIGTERM', handleExit);
 
 process.on('uncaughtException', async (err) => {
     console.error('Uncaught Exception:', err);

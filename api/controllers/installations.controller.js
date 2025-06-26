@@ -1,13 +1,10 @@
-const express = require('express');
-const router = express.Router();
 const installationsUtils = require('../utils/installationsUtils');
 const { updateConfigAttribute } = require('../utils/configUtils');
-
 const { Sema } = require('async-sema');
 
 const downloadSema = new Sema(1);
 
-router.put('/download/:platform/:version', async (req, res) => {
+async function downloadServer(req, res) {
     await downloadSema.acquire();
     
     try {
@@ -16,14 +13,13 @@ router.put('/download/:platform/:version', async (req, res) => {
 
         updateConfigAttribute("platform", req.params.platform);
         updateConfigAttribute("version", req.params.version);
-
     } catch (error) {
-
         res.status(500).send(`Error downloading server files: ${error}`);
     } finally{
         downloadSema.release();
     }
-});
+}
 
-
-module.exports = router;
+module.exports = {
+    downloadServer
+}
