@@ -4,10 +4,10 @@ const { limiter } = require('./middleware/limiter.middleware');
 
 const app = express();
 
-const adminRoutes = require('./routes/adminRoutes');
-const serverRoutes = require('./routes/serverRoutes'); // Routes are separated
-const propertiesRoute = require('./routes/propertiesRoutes'); // Routes are separated
-const installationsRoutes = require('./routes/installationsRoutes'); // Routes are separated
+const adminRoutes = require('./routes/admin.routes');
+const serverRoutes = require('./routes/server.routes'); // Routes are separated
+const propertiesRoute = require('./routes/properties.routes'); // Routes are separated
+const installationsRoutes = require('./routes/installations.routes'); // Routes are separated
 
 app.use(cors());
 app.use(limiter)
