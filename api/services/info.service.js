@@ -87,14 +87,16 @@ function getPlatform(jarPath = consts.serverDirectory + "/" + consts.serverName)
 }
   
 function getVersion(jarPath) {
-  if (getPlatform(jarPath) == "Fabric") {
-    console.error("Unable to get version from fabric servers");
-    return "Unable to fetch version";
-  }
-
+  
   const zip = new AdmZip(jarPath);
   const entries = zip.getEntries();
-
+  
+  if (getPlatform(jarPath) == "Fabric") {
+    const installEntry = entries.find(entry => entry.entryName === 'install.properties');
+    const text = zip.readAsText(installEntry);
+    return text.split("game-version=")[1];
+  }
+    
   const versionEntry = entries.find(e => e.entryName === "version.json");
   if (versionEntry) {
       try {
