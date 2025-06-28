@@ -16,24 +16,8 @@ async function playerCount(req, res) {
 
 async function getUpTime(req, res) {
     try {
-        if (infoService.getStartTime() === null) {
-            res.status(200).send({ uptime: "0s" });
-            return;
-        }
         
-        const ms = Date.now() - infoService.getStartTime();
-    
-        const totalSeconds = Math.floor(ms / 1000);
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-    
-        let formatted = [];
-        if (hours > 0) formatted.push(`${hours}h`);
-        if (minutes > 0 || hours > 0) formatted.push(`${minutes}m`);
-        formatted.push(`${seconds}s`);
-    
-        res.status(200).send({ uptime: formatted.join(" ") });
+        res.status(200).send(await infoService.getUpTime());
     } catch (error) {
         console.error(error);
         res.status(500).send("error.. " + error.message);
@@ -80,11 +64,23 @@ async function getPlatform(req, res) {
     }
 }
 
+async function getAllInfo(req, res) {
+    try {
+        let serverProcess = serverService.getServerProcess();
+        let jarPath = consts.serverDirectory + "/" + consts.serverName
+        res.status(200).send(await infoService.getInfo(serverProcess, jarPath, consts.serverDirectory));
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("error.. " + error.message);
+    }
+}
+
 module.exports = {
     playerCount,
     getUpTime,
     getMemoryUsage,
     getWorldSize,
     getVersion,
-    getPlatform
+    getPlatform,
+    getAllInfo
 }

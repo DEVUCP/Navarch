@@ -61,8 +61,6 @@ function getPlatform(jarPath) {
   const entries = zip.getEntries();
   const names = entries.map(e => e.entryName);
 
-  console.log(names);
-
   const has = (file) => names.includes(file);
 
   // Detect Paper
@@ -100,7 +98,6 @@ function getVersion(jarPath) {
   if (versionEntry) {
       try {
           const content = JSON.parse(zip.readAsText(versionEntry));
-          console.log(content);
           return content.name || content.id || null;
       } catch (err) {
           console.warn("Failed to parse version.json:", err.message);
@@ -117,6 +114,72 @@ function getVersion(jarPath) {
   return null;
 }
 
+async function getUpTime() {
+  if (getStartTime() === null) {
+      return { uptime: "0s" };
+  }
+  
+  const ms = Date.now() - getStartTime();
+
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  let formatted = [];
+  if (hours > 0) formatted.push(`${hours}h`);
+  if (minutes > 0 || hours > 0) formatted.push(`${minutes}m`);
+  formatted.push(`${seconds}s`);
+
+  return { uptime: formatted.join(" ") };
+}
+
+async function getInfo(serverProcess, jarPath, folderPath) {
+  let memoryUsage = null;
+  let platform = null;
+  let version = null;
+  let directorySizeMB = null;
+  let uptimeMs = null;
+
+  try {
+      memoryUsage = await getMemoryUsage(serverProcess);
+  } catch (err) {
+      console.warn('Failed to get memory usage:', err.message);
+  }
+
+  try {
+      platform = getPlatform(jarPath);
+  } catch (err) {
+      console.warn('Failed to get platform:', err.message);
+  }
+
+  try {
+      version = getVersion(jarPath);
+  } catch (err) {
+      console.warn('Failed to get version:', err.message);
+  }
+
+  try {
+      directorySizeMB = getDirectorySize(folderPath);
+      directorySizeMB = Math.round(directorySizeMB * 100) / 100;
+  } catch (err) {
+      console.warn('Failed to get directory size:', err.message);
+  }
+
+  try {
+      uptime = await getUpTime();
+  } catch (err) {
+      console.warn('Failed to calculate uptime:', err.message);
+  }
+
+  return {
+      memoryUsage,
+      platform,
+      version,
+      directorySizeMB,
+      uptime: uptime.uptime,
+  };
+}
 
 module.exports = {
     startCounting,
@@ -125,5 +188,7 @@ module.exports = {
     getMemoryUsage,
     getDirectorySize,
     getPlatform,
-    getVersion
+    getVersion,
+    getInfo,
+    getUpTime
 }
