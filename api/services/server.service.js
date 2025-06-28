@@ -1,22 +1,22 @@
 const { spawn, exec } = require('child_process');
 const fs = require('fs');
 const consts = require("../consts");
-const {freemem} = require('os');
-const {getConfigAttribute} = require("./configUtils");
-const path = require('path');
+const { freemem } = require('os');
+const configUtils = require('../utils/config.util');
 
 let serverProcess = null;
-let serverStatus = 0;
+let serverStatus = consts.serverStatus.OFFLINE;
 
 async function isServerOn() {
     try {
-        const serverPID = getConfigAttribute("os") != "Linux" ? await getStrayServerInstance_WINDOWS() : await getStrayServerInstance_LINUX();
-        return !!serverPID || serverStatus == 1;
+        const serverPID = configUtils.getConfigAttribute("os") != "Linux" ? await getStrayServerInstance_WINDOWS() : await getStrayServerInstance_LINUX();
+        return serverPID || serverStatus == consts.serverStatus.RUNNING;
     } catch (error) {
         return false;
     }
 }
-function deleteServerOutput(){
+
+function deleteServerOutput() {
     try {
         fs.rmSync(consts.serverLogsFilePath, { force: true });
     } catch (error) {
@@ -24,33 +24,30 @@ function deleteServerOutput(){
     }
 }
 
-function isServerStarting(){
-
+function isServerStarting() {
     const serverLogs = getServerlogs();
-    if(serverLogs == null || serverLogs.includes("All dimensions are saved")){
+
+    if (serverLogs == null || serverLogs.includes("All dimensions are saved"))
         return 0;
-    }
-    if(serverLogs.includes("Starting") && !serverLogs.includes("Done")){
-        serverStatus = 2;
+
+    if (serverLogs.includes("Starting") && !serverLogs.includes("Done")) {
+        serverStatus = consts.serverStatus.STARTING;
         return serverStatus;
-    }else if(serverLogs.includes("Done")){
-        serverStatus = 1;
+    } else if (serverLogs.includes("Done")) {
+        serverStatus = consts.serverStatus.RUNNING;
         return serverStatus;
-    }
-    else{
+    } else{
         return 0;
     }
 }
 
 function isEULAsigned() {
     if (fs.existsSync(consts.eulaFilePath)){
-        if (fs.readFileSync(consts.eulaFilePath, 'utf8').includes('eula=true')) {
+        if (fs.readFileSync(consts.eulaFilePath, 'utf8').includes('eula=true')) 
             return true;
-        }
         else
             return false;
-    }
-    else
+    } else
         return false;
 }
 
@@ -60,43 +57,23 @@ function signEULA() {
 
 function getServerlogs() {
     try {
-        return fs.readFileSync(consts.serverLogsFilePath, { encoding: 'utf8', flag: 'r' })
+        return fs.readFileSync(consts.serverLogsFilePath, { encoding: 'utf8', flag: 'r' });
     } catch (error) {
         return null;
     }
 }
 
 async function runMCCommand(command) {
-    try{
-
-        if(!isServerOn()){
-            throw new Error("Can't run command, server is offline.")
+    try {
+        if (!isServerOn()) {
+            throw new Error("Can't run command, server is offline.");
         }
+
         serverProcess.stdin.write(`${command}\n`);
-    } catch(error){
+    } catch(error) {
         console.error(error);
     }
 }
-
-async function killStrayServerInstance(){
-    switch(getConfigAttribute("os")){
-        case "Windows_NT":
-            await killStrayServerInstance_WINDOWS();
-            serverStatus = 0;
-            deleteServerOutput();
-            break;
-        case "Linux":
-            await killStrayServerInstance_LINUX();
-            serverStatus = 0;
-            deleteServerOutput();
-            break;
-
-        case _:
-            await killStrayServerInstance_LINUX();
-            break;
-  }
-}
-
 
 function getStrayServerInstance_WINDOWS() {
     return new Promise((resolve, reject) => {
@@ -112,9 +89,11 @@ function getStrayServerInstance_WINDOWS() {
         });
 
         tasklist.on('close', (code) => {
-            if (code !== 0) {
+            if (code !== 0) 
                 reject(`tasklist command failed with code ${code}`);
-            } else if (output.includes('java.exe')) {
+            else if (!output.includes('java.exe'))
+                reject('No Minecraft server found with java.exe');
+            else {
                 const netstat = spawn('netstat', ['-ano']);
 
                 let netstatOutput = '';
@@ -127,49 +106,24 @@ function getStrayServerInstance_WINDOWS() {
                 });
 
                 netstat.on('close', (code) => {
-                    if (code !== 0) {
+                    if (code !== 0) 
                         reject(`netstat command failed with code ${code}`);
-                    } else {
+                    else {
+                        const port = configUtils.getConfigAttribute("port");
 
-                        const port = getConfigAttribute("port");
                         const regex = new RegExp(`TCP\\s+.*:${port}\\s+.*\\s+LISTENING\\s+(\\d+)`, 'i');
                         const match = netstatOutput.match(regex);
                                              
-                        if (match) {
+                        if (match) 
                             resolve(parseInt(match[1]));
-                        } else {
+                        else 
                             reject(`No Minecraft server found on port ${port}`);
-                        }
                     }
                 });
-            } else {
-                reject('No Minecraft server found with java.exe');
             }
         });
     });
 }
-
-async function killStrayServerInstance_WINDOWS() {
-    try {
-        const strayServerPID = await getStrayServerInstance_WINDOWS();
-        const command = `taskkill /PID ${strayServerPID} /F`;
-
-        exec(command, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`exec error: ${error}`);
-                return;
-            }
-            if (stderr) {
-                console.error(`stderr: ${stderr}`);
-                return;
-            }
-            console.log(`Process with PID ${strayServerPID} killed successfully`);
-        });
-    } catch (error) {
-        console.error(error);
-    }
-}
-
 
 function getStrayServerInstance_LINUX() {
     return new Promise((resolve, reject) => {
@@ -186,14 +140,12 @@ function getStrayServerInstance_LINUX() {
         });
 
         ps.on('close', (code) => {
-            if (code !== 0) {
+            if (code !== 0)
                 return reject(`ps command failed with code ${code}`);
-            }
 
             const javaPIDs = output.trim().split('\n').map(line => line.trim()).filter(Boolean);
-            if (javaPIDs.length === 0) {
+            if (javaPIDs.length === 0) 
                 return reject('No Java processes found.');
-            }
 
             // Step 2: Check for listeners on the target port
             const ss = spawn('ss', ['-tlnp']);
@@ -208,11 +160,10 @@ function getStrayServerInstance_LINUX() {
             });
 
             ss.on('close', (code) => {
-                if (code !== 0) {
+                if (code !== 0)
                     return reject(`ss command failed with code ${code}`);
-                }
 
-                const port = getConfigAttribute("mc_port"); // assumed defined
+                const port = configUtils.getConfigAttribute("mc_port"); // assumed defined
                 const lines = ssOutput.split('\n');
 
                 for (const line of lines) {
@@ -220,9 +171,8 @@ function getStrayServerInstance_LINUX() {
                         const pidMatch = line.match(/pid=(\d+)/);
                         if (pidMatch) {
                             const pid = pidMatch[1];
-                            if (javaPIDs.includes(pid)) {
+                            if (javaPIDs.includes(pid))
                                 return resolve(parseInt(pid, 10));
-                            }
                         }
                     }
                 }
@@ -233,10 +183,15 @@ function getStrayServerInstance_LINUX() {
     });
 }
 
-async function killStrayServerInstance_LINUX() {
+async function killStrayServerInstance() {
     try {
-        const strayServerPID = await getStrayServerInstance_LINUX();
-        const command = `kill -9 ${strayServerPID}`;
+        if (configUtils.getConfigAttribute("os") == "Linux") {
+            const strayServerPID = await getStrayServerInstance_LINUX();
+            const command = `kill -9 ${strayServerPID}`;
+        } else {
+            const strayServerPID = await getStrayServerInstance_WINDOWS();
+            const command = `taskkill /PID ${strayServerPID} /F`;
+        }
 
         exec(command, (error, stdout, stderr) => {
             if (error) {
@@ -251,36 +206,38 @@ async function killStrayServerInstance_LINUX() {
         });
     } catch (error) {
         console.error(error);
+    } finally {
+        serverStatus = consts.serverStatus.OFFLINE;
+        deleteServerOutput();
     }
 }
 
-
-
-function validateMemory(){
+function validateMemory() {
     try {
-        
         const launchConfig = require("../server-config.json");
         const availableMemory = Math.floor(freemem() / 1048576);
-        if(availableMemory > parseInt(launchConfig["memory"].replace("M",""))){
-
+        if (availableMemory > parseInt(launchConfig["memory"].replace("M",""))) {
             console.log(`${launchConfig["memory"]} Available for use!`);
+            
             return true;
-        }else{
+        } else {
             console.log(`${launchConfig["memory"]} not available for use!`);
+            
             return false;
-
         }
     } catch (error) {
         console.error(error);
         return false;
     }
 }
+
 async function startServer() {
-    if(!validateMemory()){
+    if (!validateMemory())
         throw new Error("Not enough memory for server to run");
-    }
+    
     const command = 'java';
-    const args = ['-Xmx1024M', '-Xms1024M', '-jar', consts.serverName, 'nogui'];
+    const mem = configUtils.getConfigJSON()["memory"];
+    const args = [`-Xmx${mem}M`, `-Xms${Number(mem) / 2}M`, '-jar', consts.serverName, 'nogui'];
 
     serverProcess = spawn(command, args, {
         cwd: consts.serverDirectory, // Set the working directory
@@ -304,20 +261,16 @@ async function startServer() {
 }
 
 async function startServerWithScript() {
-    if(!validateMemory()){
+    if (!validateMemory())
         throw new Error("Not enough memory for server to run");
-    }
-    try{
-        if (!fs.existsSync(path.join(consts.serverDirectory, 'start.sh'))) {
-                throw new Error("start.sh script not found in server directory\n If you don't intend on using a script, set start_server_with_script to false in server-config.json");
-        }
-    
+
     serverProcess = spawn('sh', ['start.sh'], {
         cwd: consts.serverDirectory,
         stdio: ['pipe', 'pipe', 'pipe'],
     });
     
     fs.writeFileSync(consts.serverLogsFilePath, '');
+
     serverProcess.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);
         fs.appendFileSync(consts.serverLogsFilePath, data);
@@ -330,24 +283,20 @@ async function startServerWithScript() {
     serverProcess.on('close', (code) => {
         console.log(`Server process exited with code ${code}`);
     });
-
-
-    }catch(error){
-        throw new Error(error);
-    }
 }
-
 
 async function doesServerJarAlreadyExist() {
     return fs.existsSync("../server/server.jar");
+}
+
+function getServerProcess() {
+    return serverProcess;
 }
 
 module.exports = {
     isServerOn,
     getStrayServerInstance_WINDOWS,
     getStrayServerInstance_LINUX,
-    killStrayServerInstance_WINDOWS,
-    killStrayServerInstance_LINUX,
     startServer,
     isServerStarting,
     doesServerJarAlreadyExist,
@@ -358,4 +307,6 @@ module.exports = {
     isEULAsigned,
     startServerWithScript,
     serverStatus,
+    deleteServerOutput,
+    getServerProcess
 };
