@@ -1,6 +1,6 @@
 const consts = require("../consts");
 const fs = require("fs");
-const { getConfigAttribute } = require("../utils/configUtils");
+const { getConfigAttribute } = require("../utils/config.util");
 const { spawn } = require('child_process');
 
 async function getProperties(){

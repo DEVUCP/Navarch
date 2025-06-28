@@ -1,6 +1,6 @@
 const propertiesService = require("../services/properties.service");
-const configUtils = require("../utils/configUtils");
-const jsonFilesUtils = require("../utils/jsonFilesUtils");
+const configUtils = require("../utils/config.util");
+const jsonFilesUtils = require("../utils/files.util");
 
 const { Sema } = require('async-sema');
 

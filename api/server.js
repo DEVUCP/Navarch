@@ -1,6 +1,6 @@
 const http = require('http');
 const { app } = require('./app');
-const configUtils = require('./utils/configUtils')
+const configUtils = require('./utils/config.util')
 
 // Util files
 const starter =  require('./starter'); 

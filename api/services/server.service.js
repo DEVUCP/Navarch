@@ -2,7 +2,7 @@ const { spawn, exec } = require('child_process');
 const fs = require('fs');
 const consts = require("../consts");
 const { freemem } = require('os');
-const configUtils = require('../utils/configUtils');
+const configUtils = require('../utils/config.util');
 
 let serverProcess = null;
 let serverStatus = consts.serverStatus.OFFLINE;

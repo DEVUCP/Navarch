@@ -1,5 +1,5 @@
 const serverService = require('../services/server.service');
-const configUtils = require('../utils/configUtils');
+const configUtils = require('../utils/config.util');
 const infoService = require('../services/info.service');
 
 const { Sema } = require('async-sema');

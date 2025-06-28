@@ -1,6 +1,6 @@
 let cleanup_done = false;
-const networkingUtils = require('./utils/networkingUtils');
-const configUtils = require('./utils/configUtils');
+const networkingUtils = require('./utils/networking.util');
+const configUtils = require('./utils/config.util');
 const debug = configUtils.getConfigAttribute("debug");
 
 async function cleanup() {

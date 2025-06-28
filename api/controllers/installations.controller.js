@@ -1,5 +1,5 @@
 const installationsService = require('../services/installations.service');
-const { updateConfigAttribute } = require('../utils/configUtils');
+const { updateConfigAttribute } = require('../utils/config.util');
 const { Sema } = require('async-sema');
 
 const downloadSema = new Sema(1);
