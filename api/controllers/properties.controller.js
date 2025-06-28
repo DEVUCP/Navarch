@@ -37,17 +37,6 @@ async function allocateRam(req, res) {
     }
 }
 
-async function playerCount(req, res) {
-    try {
-        const playerCount = await propertiesService.getOnlinePlayers();
-
-        res.status(200).send({ playerCount: playerCount });
-    } catch(error) {
-        console.error(error);
-        res.status(500).send("error.. " + error.message);
-    }
-}
-
 async function serverConfig(req, res) {
     try {
         const configJSON = configUtils.getConfigJSON();
@@ -164,7 +153,6 @@ async function modifyBannedIPs(req, res) {
 module.exports = {
     toggleProperty,
     allocateRam,
-    playerCount,
     serverConfig,
     getWhitelist,
     getOps,

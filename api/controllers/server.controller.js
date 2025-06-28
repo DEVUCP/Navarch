@@ -1,5 +1,6 @@
 const serverService = require('../services/server.service');
 const configUtils = require('../utils/configUtils');
+const infoService = require('../services/info.service');
 
 const { Sema } = require('async-sema');
 
@@ -39,6 +40,7 @@ async function startServer(req, res) {
             }else{
                 await serverService.startServer();
             }
+            infoService.startCounting();
             res.send('Server started.');
             
         } catch (error) {
@@ -66,6 +68,7 @@ async function stopServer(req, res) {
             serverStatus = 0;
         }
             
+        infoService.stopCounting();
         res.status(200).send('Server stopped.');
     } catch (error) {
         res.status(500).send(`Failed to stop server: ${error}`);

@@ -5,7 +5,6 @@ const propertiesServices = require('../services/properties.service');
 const { 
     toggleProperty,
     allocateRam,
-    playerCount,
     serverConfig,
     getWhitelist,
     getOps,
@@ -29,8 +28,6 @@ router.get('/', async (req, res) => {
 router.put('/toggle/:property', toggleProperty);
 
 router.put('/allocate-ram/:mb', allocateRam);
-
-router.get('/player-count', playerCount);
 
 router.get('/server-config.json', serverConfig);
 

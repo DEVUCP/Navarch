@@ -2,14 +2,14 @@ const { spawn, exec } = require('child_process');
 const fs = require('fs');
 const consts = require("../consts");
 const { freemem } = require('os');
-const { getConfigAttribute } = require("../utils/configUtils");
+const configUtils = require('../utils/configUtils');
 
 let serverProcess = null;
 let serverStatus = consts.serverStatus.OFFLINE;
 
 async function isServerOn() {
     try {
-        const serverPID = getConfigAttribute("os") != "Linux" ? await getStrayServerInstance_WINDOWS() : await getStrayServerInstance_LINUX();
+        const serverPID = configUtils.getConfigAttribute("os") != "Linux" ? await getStrayServerInstance_WINDOWS() : await getStrayServerInstance_LINUX();
         return serverPID || serverStatus == consts.serverStatus.RUNNING;
     } catch (error) {
         return false;
@@ -109,7 +109,7 @@ function getStrayServerInstance_WINDOWS() {
                     if (code !== 0) 
                         reject(`netstat command failed with code ${code}`);
                     else {
-                        const port = getConfigAttribute("port");
+                        const port = configUtils.getConfigAttribute("port");
 
                         const regex = new RegExp(`TCP\\s+.*:${port}\\s+.*\\s+LISTENING\\s+(\\d+)`, 'i');
                         const match = netstatOutput.match(regex);
@@ -163,7 +163,7 @@ function getStrayServerInstance_LINUX() {
                 if (code !== 0)
                     return reject(`ss command failed with code ${code}`);
 
-                const port = getConfigAttribute("mc_port"); // assumed defined
+                const port = configUtils.getConfigAttribute("mc_port"); // assumed defined
                 const lines = ssOutput.split('\n');
 
                 for (const line of lines) {
@@ -185,7 +185,7 @@ function getStrayServerInstance_LINUX() {
 
 async function killStrayServerInstance() {
     try {
-        if (getConfigAttribute("os") == "Linux") {
+        if (configUtils.getConfigAttribute("os") == "Linux") {
             const strayServerPID = await getStrayServerInstance_LINUX();
             const command = `kill -9 ${strayServerPID}`;
         } else {
@@ -216,7 +216,6 @@ function validateMemory() {
     try {
         const launchConfig = require("../server-config.json");
         const availableMemory = Math.floor(freemem() / 1048576);
-        
         if (availableMemory > parseInt(launchConfig["memory"].replace("M",""))) {
             console.log(`${launchConfig["memory"]} Available for use!`);
             
@@ -237,7 +236,8 @@ async function startServer() {
         throw new Error("Not enough memory for server to run");
     
     const command = 'java';
-    const args = ['-Xmx1024M', '-Xms1024M', '-jar', consts.serverName, 'nogui'];
+    const mem = configUtils.getConfigJSON()["memory"];
+    const args = [`-Xmx${mem}M`, `-Xms${Number(mem) / 2}M`, '-jar', consts.serverName, 'nogui'];
 
     serverProcess = spawn(command, args, {
         cwd: consts.serverDirectory, // Set the working directory
@@ -289,6 +289,10 @@ async function doesServerJarAlreadyExist() {
     return fs.existsSync("../server/server.jar");
 }
 
+function getServerProcess() {
+    return serverProcess;
+}
+
 module.exports = {
     isServerOn,
     getStrayServerInstance_WINDOWS,
@@ -303,5 +307,6 @@ module.exports = {
     isEULAsigned,
     startServerWithScript,
     serverStatus,
-    deleteServerOutput
+    deleteServerOutput,
+    getServerProcess
 };
