@@ -2,7 +2,7 @@ const fs = require('fs');
 const consts = require("../consts");
 
 async function writeDownloadedFile(response, version, platform) {
-    try{
+    try {
         if (response.ok) {
         console.log(`Downloading ${platform} server.jar for version ${version}. STATUS: ${response.status}`);
         const fileName = `${consts.serverDirectory}/${consts.serverName}`;
@@ -13,7 +13,7 @@ async function writeDownloadedFile(response, version, platform) {
     } else {
         throw new Error(`Failed to download ${platform} for version ${version}. STATUS: ${response.status}`);
     }
-    } catch(error){
+    } catch(error) {
         console.error(error);
     }
 }

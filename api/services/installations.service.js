@@ -7,12 +7,16 @@ async function downloadRouter(platform, version) {
         switch(platform) {
             case "vanilla":
                 response = await fetch(await urlFetcher.fetchVanillaURL(version));
+                break;
             case "paper":
                 response = await fetch(await urlFetcher.fetchPaperURL(version));
+                break;
             case "fabric":
                 response = await fetch(await urlFetcher.fetchFabricURL(version));
+                break;
             case "forge":
                 response = await fetch(await urlFetcher.fetchForgeURL(version));
+                break;
             case _:
                 throw new Error(`Invalid platform --> ${platform}`)
         }
