@@ -1,4 +1,4 @@
-const urlFetcher = require("../utils/platformURLFetcherUtil");
+const urlFetcher = require("../utils/url_fetcher.util");
 const { writeDownloadedFile } = require("../utils/installations.util");
 
 async function downloadRouter(platform, version) {
