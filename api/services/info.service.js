@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const pidusage = require('pidusage')
 const AdmZip = require('adm-zip');
+const consts = require('../consts');
 
 let startTime = null;
 
@@ -56,7 +57,7 @@ function getDirectorySize(folderPath) {
     return sizeInMB;
   }
 
-function getPlatform(jarPath) {
+function getPlatform(jarPath = consts.serverDirectory + "/" + consts.serverName) {
   const zip = new AdmZip(jarPath);
   const entries = zip.getEntries();
   const names = entries.map(e => e.entryName);
@@ -115,9 +116,8 @@ function getVersion(jarPath) {
 }
 
 async function getUpTime() {
-  if (getStartTime() === null) {
+  if (getStartTime() === null) 
       return { uptime: "0s" };
-  }
   
   const ms = Date.now() - getStartTime();
 
@@ -139,7 +139,6 @@ async function getInfo(serverProcess, jarPath, folderPath) {
   let platform = null;
   let version = null;
   let directorySizeMB = null;
-  let uptimeMs = null;
 
   try {
       memoryUsage = await getMemoryUsage(serverProcess);

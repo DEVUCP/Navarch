@@ -5,8 +5,8 @@ const { Sema } = require('async-sema');
 const downloadSema = new Sema(1);
 
 async function downloadServer(req, res) {
-    await downloadSema.acquire();
-    
+    await downloadSema.acquire();   
+     
     try {
         await installationsService.downloadRouter(req.params.platform, req.params.version);
         res.status(201).send('Downloaded Successfully');
