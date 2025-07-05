@@ -1,6 +1,6 @@
 const consts = require("../consts");
 const fs = require("fs");
-const { getConfigAttribute } = require("./configUtils");
+const { getConfigAttribute } = require("../utils/config.util");
 const { spawn } = require('child_process');
 
 async function getProperties(){
@@ -70,7 +70,6 @@ function JSONToProperties(json){
     return properties;
 }
 
-
 async function getOnlinePlayers() {
     const port = getConfigAttribute("port");
     
@@ -103,7 +102,6 @@ async function getOnlinePlayers() {
         });
     });
 }
-
 
 module.exports = {
     getProperties,

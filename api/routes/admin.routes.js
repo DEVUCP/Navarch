@@ -1,4 +1,4 @@
-const apiAccessUtils = require('../utils/apiAccessUtils');
+const apiAccessUtils = require('../utils/access.util');
 const express = require('express');
 const router = express.Router();
 

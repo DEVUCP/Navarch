@@ -14,6 +14,11 @@ const configFilePath = "./server-config.json";
 const eulaFilePath = `${serverDirectory}/eula.txt`;
 const upnpcPath = '/upnpc';
 
+const serverStatus = {
+    OFFLINE: 0,
+    RUNNING: 1,
+    STARTING: 2
+};
 
 module.exports = {
     serverDirectory,
@@ -29,4 +34,5 @@ module.exports = {
     serverBannedIPsPath,
     keysJSONPath,
     eulaFilePath,
+    serverStatus
 };

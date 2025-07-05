@@ -1,6 +1,6 @@
-const networkingUtils = require('./utils/networkingUtils');
-const apiAccessUtils = require('./utils/apiAccessUtils');
-const configUtils = require('./utils/configUtils')
+const networkingUtils = require('./utils/networking.util');
+const apiAccessUtils = require('./utils/access.util');
+const configUtils = require('./utils/config.util')
 const fs = require('fs');
 const consts = require('./consts');
 
