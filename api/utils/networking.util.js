@@ -2,7 +2,7 @@ const consts = require("../consts");
 const { exec } = require('child_process');
 const util = require('util');
 const path = require('path');
-const configUtils = require('./configUtils')
+const configUtils = require('./config.util')
 
 
 

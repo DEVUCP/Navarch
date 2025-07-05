@@ -5,14 +5,19 @@ on:
     branches:
       - main
       - 'ci*'
+      - 'front-end'
+      - 'api'
   pull_request:
     branches:
       - main
       - 'ci*'
+      - 'front-end'
+      - 'api'
 
 jobs:
   test-api-linux:
     name: API Test (Linux)
+    if: github.ref_name == 'api' || (github.ref_name != 'api' && github.ref_name != 'front-end')
     runs-on: ubuntu-latest
 
     strategy:
@@ -35,6 +40,7 @@ jobs:
 
   test-frontend-linux:
     name: Frontend Test (Linux)
+    if: github.ref_name == 'front-end' || (github.ref_name != 'api' && github.ref_name != 'front-end')
     runs-on: ubuntu-latest
 
     strategy:
@@ -57,6 +63,7 @@ jobs:
 
   test-api-windows:
     name: API Test (Windows)
+    if: github.ref_name == 'api' || (github.ref_name != 'api' && github.ref_name != 'front-end')
     runs-on: windows-latest
 
     strategy:
@@ -79,6 +86,7 @@ jobs:
 
   test-frontend-windows:
     name: Frontend Test (Windows)
+    if: github.ref_name == 'front-end' || (github.ref_name != 'api' && github.ref_name != 'front-end')
     runs-on: windows-latest
 
     strategy:
