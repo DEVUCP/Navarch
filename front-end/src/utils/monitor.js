@@ -28,6 +28,6 @@ export const getServerStatus = async () => {
         return data;
     } catch (error) {
         console.error("Failed to fetch server status:", error);
-        return false;
+        return 4;
     }
 }

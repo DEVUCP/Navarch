@@ -1,22 +1,40 @@
 import { useEffect, useState } from "react";
 import { forwardRef, useImperativeHandle, useRef } from "react";
 import { useServerStatus, getServerStatus } from "../utils/monitor";
+import styles from "../styles/StartStopBtn.module.css";
 
+const statusCodes = {
+  OFFLINE: 0,
+  ONLINE: 1,
+  STARTING: 2,
+  FETCHING: 3,
+  ERROR: 4
+}
 function StartStopBtn(){
+
       
-  const [serverStatus, setServerStatus] = useState(3);
+  const [serverStatus, setServerStatus] = useState(statusCodes.FETCHING);
 
   useEffect(() => {
       const interval = setInterval( async () => {
-        if(await getServerStatus() === 1){
-          setServerStatus(1);
+        const status = await getServerStatus();
+        switch(status) {
+          case statusCodes.ONLINE:
+            setServerStatus(statusCodes.ONLINE);
+            break;
+          case statusCodes.STARTING:
+            setServerStatus(statusCodes.STARTING);
+            break;
+          case statusCodes.OFFLINE:
+            setServerStatus(statusCodes.OFFLINE);
+            break;
+          case statusCodes.ERROR:
+            setServerStatus(statusCodes.ERROR);
+            break;
+          default:
+            setServerStatus(statusCodes.ERROR);
+            break;
         }
-        else if(await getServerStatus() === 2){
-          setServerStatus(2);
-        }
-        else{
-          setServerStatus(0);
-        };
       }, 2000)
       return () => clearInterval(interval);
   }, [])
@@ -28,21 +46,22 @@ function StartStopBtn(){
   };
 
   async function startStopServer(){
-      try{
-      if(serverStatus){
-          await fetch(`http://${localStorage.getItem("ipAddress")}:${localStorage.getItem("port")}/server/stop`, {method: "PUT"})
-          setServerStatus(0);    
+    try{
+      if(serverStatus === statusCodes.ONLINE){
+        await fetch(`http://${localStorage.getItem("ipAddress")}:${localStorage.getItem("port")}/server/stop`, {method: "PUT"})
+        setServerStatus(statusCodes.OFFLINE);    
       }
-      else{
-          const response = await fetch(`http://${localStorage.getItem("ipAddress")}:${localStorage.getItem("port")}/server/start`, {method: "PUT"})
+      else if(serverStatus === statusCodes.OFFLINE){
+        const response = await fetch(`http://${localStorage.getItem("ipAddress")}:${localStorage.getItem("port")}/server/start`, {method: "PUT"})
           if ((await response.text()).includes("EULA")){
               handleOpenModal();
               return;
           }
-          setServerStatus(2);  
+          setServerStatus(statusCodes.STARTING);  
       }
       }
       catch(error){
+          alert("Failed to start/stop server, API might be offline");
           console.error(error);
       }
   }
@@ -53,19 +72,16 @@ function StartStopBtn(){
   <button 
       type="button" 
       onClick={startStopServer} 
-      className={"btn btn-lg " + "btn-"+ (serverStatus === 0 ? "success" : serverStatus === 1 ? "danger" : serverStatus === 2 ? "warning" : "secondary") +" w-100"} 
+      className={`${styles.button} ${serverStatus === statusCodes.OFFLINE ? styles.success : serverStatus === statusCodes.ONLINE ? styles.danger : serverStatus === statusCodes.STARTING ? styles.warning : serverStatus === statusCodes.ERROR ? styles.secondary : styles.secondary}`}
       id="start-stop-btn"
-      disabled={serverStatus === 2 || serverStatus === 3}
-      style={{outline: "0.25em solid black",borderRadius: ".25em"}}>
-          {serverStatus === 0 ? "Start Server" : serverStatus === 1 ? "Stop Server" : serverStatus === 2 ? "Starting..." : "Fetching info..."}
+      disabled={serverStatus === statusCodes.STARTING || serverStatus === statusCodes.FETCHING || serverStatus === statusCodes.ERROR}>
+          {serverStatus === statusCodes.OFFLINE ? "Start Server" : serverStatus === statusCodes.ONLINE ? "Stop Server" : serverStatus === statusCodes.STARTING ? "Starting..." : serverStatus === statusCodes.ERROR ? "API Offline" : "Fetching info..."}
       </button>
   </>
   )
 }
 
-
 export default StartStopBtn;
-
 
 const SimpleModal = forwardRef((props, ref) => {
   const dialogRef = useRef(null);
@@ -91,9 +107,9 @@ const SimpleModal = forwardRef((props, ref) => {
   };
 
   return (
-    <dialog ref={dialogRef} style={styles.dialog}>
+    <dialog ref={dialogRef} style={modalStyles.dialog}>
       <p>To continue you must accept <a href="https://aka.ms/MinecraftEULA">Mojang's EULA</a></p>
-      <div style={styles.buttons}>
+      <div style={modalStyles.buttons}>
         <button onClick={handleAccept}>Accept</button>
         <button onClick={handleReject}>Reject</button>
       </div>
@@ -101,7 +117,7 @@ const SimpleModal = forwardRef((props, ref) => {
   );
 });
 
-const styles = {
+const modalStyles = {
   dialog: {
     padding: "1.5em",
     border: "none",
