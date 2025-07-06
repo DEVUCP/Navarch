@@ -6,7 +6,15 @@ import { useState } from "react";
 import VersionSelectDropdown from './VersionSelectDropdown';
 import StartStopBtn from './StartStopBtn';
 import Console from './Console';
-import TabButtons from './TabButtons';
+import InfoTab from './InfoTab';
+
+import Tab from '@mui/material/Tab';
+import TabPanel from '@mui/lab/TabPanel';
+import TabContext from '@mui/lab/TabContext';
+import Box from '@mui/material/Box';
+import Tabs from '@mui/material/Tabs';
+import { ServerDataProvider } from '../utils/serverDataContext';
+
 
 function ServerWindow(){
 
@@ -14,21 +22,37 @@ function ServerWindow(){
 
   return(
     <div className={styles.container}>
-{/* 
-      <div className={styles.subContainer}>
-        <TabButtons taboption={setTabOption}></TabButtons>
-        <div className={styles.subContainer}>
-          <div className={tabOption !== "info-tab" ? styles.hidden : styles.tabPage}>
-            info tab placeholder
-          </div>
-          <div className={tabOption !== "properties-tab" ? styles.hidden : styles.tabPage}>
-            properties tab placeholder
-          </div>
-          <div className={tabOption !== "version-tab" ? styles.hidden : styles.tabPage}>
-            version tab placeholder
-          </div>
-        </div>
-      </div> */}
+      <div className={styles.subContainer2}>
+        <div className={styles.actionsScreen}>
+        <Box sx={{ width: '100%'}}>
+          <TabContext value={tabOption}>
+            <ServerDataProvider>
+            <Tabs
+              value={tabOption}
+              
+              onChange={(event, newValue) => setTabOption(newValue)}
+              textColor="primary"
+              indicatorColor="primary"
+              centered
+            >
+              <Tab value="info-tab" label="Info" />
+              <Tab value="properties-tab" label="Properties" />
+              <Tab value="version-tab" label="Version" />
+            </Tabs>
+            <TabPanel value="info-tab">
+              <InfoTab></InfoTab>
+            </TabPanel>
+            <TabPanel value="properties-tab">
+              properties tab placeholder
+            </TabPanel>
+            <TabPanel value="version-tab">
+              version tab placeholder
+            </TabPanel>
+              </ServerDataProvider>
+          </TabContext>
+        </Box>
+      </div>
+    </div>
 
 
       <div className={styles.subContainer}>
