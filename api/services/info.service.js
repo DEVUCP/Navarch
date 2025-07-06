@@ -3,6 +3,7 @@ const path = require('path');
 const pidusage = require('pidusage')
 const AdmZip = require('adm-zip');
 const consts = require('../consts');
+const serverService = require("./server.service");
 
 let startTime = null;
 
@@ -141,6 +142,7 @@ async function getInfo(serverProcess, jarPath, folderPath) {
   let platform = null;
   let version = null;
   let directorySizeMB = null;
+  let serverStatus = null;
 
   try {
       memoryUsage = await getMemoryUsage(serverProcess);
@@ -173,12 +175,19 @@ async function getInfo(serverProcess, jarPath, folderPath) {
       console.warn('Failed to calculate uptime:', err.message);
   }
 
+  try {
+      serverStatus = serverService.isServerStarting();
+  } catch (err) {
+      console.warn('Failed to get server status:', err.message);
+  }
+
   return {
       memoryUsage,
       platform,
       version,
       directorySizeMB,
       uptime: uptime.uptime,
+      status: serverStatus
   };
 }
 
