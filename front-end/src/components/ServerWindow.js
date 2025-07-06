@@ -21,12 +21,12 @@ function ServerWindow(){
   const [tabOption, setTabOption] = useState("info-tab")
 
   return(
+  <ServerDataProvider>
     <div className={styles.container}>
       <div className={styles.subContainer2}>
         <div className={styles.actionsScreen}>
         <Box sx={{ width: '100%'}}>
           <TabContext value={tabOption}>
-            <ServerDataProvider>
             <Tabs
               value={tabOption}
               
@@ -48,7 +48,6 @@ function ServerWindow(){
             <TabPanel value="version-tab">
               version tab placeholder
             </TabPanel>
-              </ServerDataProvider>
           </TabContext>
         </Box>
       </div>
@@ -67,12 +66,13 @@ function ServerWindow(){
                   data-bs-toggle="tooltip"
                   data-bs-placement="top"
                   title="Clears all saved data and reloads the page"
-                >
+                  >
                   Reset
                 </button>
         {/* <VersionSelectDropdown></VersionSelectDropdown> */}
       </div>
     </div>
+  </ServerDataProvider>
   );
 }
 

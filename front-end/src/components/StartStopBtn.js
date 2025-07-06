@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { forwardRef, useImperativeHandle, useRef } from "react";
-import { useServerStatus, getServerStatus } from "../utils/monitor";
+import { useServerData } from "../utils/serverDataContext";
 import styles from "../styles/StartStopBtn.module.css";
 
 const statusCodes = {
@@ -14,30 +14,15 @@ function StartStopBtn(){
 
       
   const [serverStatus, setServerStatus] = useState(statusCodes.FETCHING);
+  const data = useServerData();
 
   useEffect(() => {
-      const interval = setInterval( async () => {
-        const status = await getServerStatus();
-        switch(status) {
-          case statusCodes.ONLINE:
-            setServerStatus(statusCodes.ONLINE);
-            break;
-          case statusCodes.STARTING:
-            setServerStatus(statusCodes.STARTING);
-            break;
-          case statusCodes.OFFLINE:
-            setServerStatus(statusCodes.OFFLINE);
-            break;
-          case statusCodes.ERROR:
-            setServerStatus(statusCodes.ERROR);
-            break;
-          default:
-            setServerStatus(statusCodes.ERROR);
-            break;
-        }
-      }, 2000)
-      return () => clearInterval(interval);
-  }, [])
+    if (data?.status !== undefined) {
+      setServerStatus(data.status);
+    } else {
+      setServerStatus(statusCodes.ERROR);
+    }
+  }, [data]);
       
   const modalRef = useRef();
 

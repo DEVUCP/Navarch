@@ -1,17 +1,34 @@
 import { useEffect , useState} from "react";
 import styles from '../styles/Console.module.css'
-import { useServerStatus, getServerStatus } from "../utils/monitor";
+import { useServerData } from "../utils/serverDataContext";
 import TurnLeftIcon from '@mui/icons-material/TurnLeft';
+
+const statusCodes = {
+  OFFLINE: 0,
+  ONLINE: 1,
+  STARTING: 2,
+  FETCHING: 3,
+  ERROR: 4
+}
 
 function Console(){
     const [consoleText, setConsoleText] = useState("The server is offline...");
     const [inputText, setInputText] = useState("");
-    const isServerOnline = useServerStatus();
     const [isSendingCommand, setIsSendingCommand] = useState(false);
+    const data = useServerData();
+    const [serverStatus, setServerStatus] = useState(statusCodes.FETCHING);
+    
+    useEffect(() => {
+        if (data?.status !== undefined) {
+            setServerStatus(data.status);
+        } else {
+            setServerStatus(statusCodes.ERROR);
+        }
+    }, [data]);
     
     useEffect(() => {
         const interval = setInterval( async () => {
-            if(await getServerStatus() === 1 || await getServerStatus() === 2){
+            if(serverStatus === statusCodes.ONLINE || serverStatus === statusCodes.STARTING){
             setIsSendingCommand(true);
             const response = await fetch(`http://${localStorage.getItem("ipAddress")}:${localStorage.getItem("port")}/server/console-text`)
             const text = await response.text()
@@ -28,13 +45,13 @@ function Console(){
             setIsSendingCommand(false);
         }, 2000)
         return () => clearInterval(interval);
-    }, [])
+    }, [serverStatus])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (inputText.trim() === "") return;
         
-        if(await getServerStatus()){
+        if(serverStatus === statusCodes.ONLINE){
             const response = await fetch(`http://${localStorage.getItem("ipAddress")}:${localStorage.getItem("port")}/server/console/run/${inputText}`, {
                 method: 'PUT',
                 headers: {
