@@ -237,7 +237,7 @@ async function startServer() {
     
     const command = 'java';
     const mem = configUtils.getConfigJSON()["memory"];
-    const args = [`-Xmx${mem}M`, `-Xms${Number(mem) / 2}M`, '-jar', consts.serverName, 'nogui'];
+    const args = [`-Xmx${mem}M`, `-Xms${Number(mem.replace('M','')) / 2}M`, '-jar', consts.serverName, 'nogui'];
 
     serverProcess = spawn(command, args, {
         cwd: consts.serverDirectory, // Set the working directory
