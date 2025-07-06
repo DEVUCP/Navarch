@@ -8,73 +8,53 @@ import StartStopBtn from './StartStopBtn';
 import Console from './Console';
 import InfoTab from './InfoTab';
 
-import Tab from '@mui/material/Tab';
-import TabPanel from '@mui/lab/TabPanel';
-import TabContext from '@mui/lab/TabContext';
-import Box from '@mui/material/Box';
-import Tabs from '@mui/material/Tabs';
+import Tabs from './Tabs/Tabs';
+import TabPanel from './Tabs/TabPanel';
 import { ServerDataProvider } from '../utils/serverDataContext';
 
-
-function ServerWindow(){
-
-  const [tabOption, setTabOption] = useState("info-tab")
-
-  return(
-  <ServerDataProvider>
-    <div className={styles.container}>
-      <div className={styles.subContainer2}>
-        <div className={styles.actionsScreen}>
-        <Box sx={{ width: '100%'}}>
-          <TabContext value={tabOption}>
-            <Tabs
-              value={tabOption}
-              
-              onChange={(event, newValue) => setTabOption(newValue)}
-              textColor="primary"
-              indicatorColor="primary"
-              centered
-            >
-              <Tab value="info-tab" label="Info" />
-              <Tab value="properties-tab" label="Properties" />
-              <Tab value="version-tab" label="Version" />
+function ServerWindow() {
+  return (
+    <ServerDataProvider>
+      <div className={styles.container}>
+        <div className={styles.subContainer2}>
+          <div className={styles.actionsScreen}>
+            <Tabs labels={[
+              { value: "info-tab", label: "Info" },
+              { value: "properties-tab", label: "Properties" },
+              { value: "version-tab", label: "Version" }
+            ]}>
+              <TabPanel value="info-tab">
+                <InfoTab />
+              </TabPanel>
+              <TabPanel value="properties-tab">
+                properties tab placeholder
+              </TabPanel>
+              <TabPanel value="version-tab">
+                version tab placeholder
+              </TabPanel>
             </Tabs>
-            <TabPanel value="info-tab">
-              <InfoTab></InfoTab>
-            </TabPanel>
-            <TabPanel value="properties-tab">
-              properties tab placeholder
-            </TabPanel>
-            <TabPanel value="version-tab">
-              version tab placeholder
-            </TabPanel>
-          </TabContext>
-        </Box>
-      </div>
-    </div>
+          </div>
+        </div>
 
-
-      <div className={styles.subContainer}>
-        <Console></Console>
-        <StartStopBtn></StartStopBtn>
-                <button 
-                  className="btn btn-danger" 
-                  onClick={() => {
-                    localStorage.clear();
-                    window.location.reload();
-                  }}
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  title="Clears all saved data and reloads the page"
-                  >
-                  Reset
-                </button>
-        {/* <VersionSelectDropdown></VersionSelectDropdown> */}
+        <div className={styles.subContainer}>
+          <Console />
+          <StartStopBtn />
+          <button 
+            className="btn btn-danger" 
+            onClick={() => {
+              localStorage.clear();
+              window.location.reload();
+            }}
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            title="Clears all saved data and reloads the page"
+          >
+            Reset
+          </button>
+        </div>
       </div>
-    </div>
-  </ServerDataProvider>
+    </ServerDataProvider>
   );
 }
-
 
 export default ServerWindow;
