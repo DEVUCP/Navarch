@@ -1,4 +1,5 @@
 cd ..
+cd ..
 
 if not exist "front-end\node_modules" (
     echo Installing front-end dependencies...
@@ -9,9 +10,12 @@ if not exist "front-end\node_modules" (
 
 if not exist "api\node_modules" (
     echo Installing back-end dependencies...
-    cd back-end
+    cd api
     call npm install
     cd ..
 )
 
+call npm install -g serve
+
 cd scripts
+cd windows

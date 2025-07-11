@@ -1,22 +1,22 @@
-#!/bin/bash
+@echo off
 
-cd ..
-cd ..
+echo Starting backend server...
 
-# Check if front-end dependencies are missing
-if [ ! -d "front-end/node_modules" ]; then
-    echo "Installing front-end dependencies..."
-    cd front-end
-    npm install
-    cd ..
-fi
+start cmd /k "cd ..\..\api && npm start"
 
-# Check if back-end dependencies are missing
-if [ ! -d "api/node_modules" ]; then
-    echo "Installing back-end dependencies..."
-    cd api
-    npm install
-    cd ..
-fi
-
-cd scripts
+echo === Checking frontend ===
+if exist "..\..\front-end\build" (
+    echo Frontend build folder exists. Serving...
+    start "" cmd /k "cd ..\..\front-end\build && npx serve"
+) else (
+    echo Frontend build folder not found. Building...
+    pushd ..\..\front-end
+    npm run build
+    popd
+    if exist "..\..\front-end\build" (
+        echo Build complete. Serving frontend...
+        start "" cmd /k "cd ..\..\front-end\build && npx serve"
+    ) else (
+        echo Frontend build failed.
+    )
+)
