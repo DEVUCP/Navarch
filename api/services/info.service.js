@@ -143,6 +143,7 @@ async function getInfo(serverProcess, jarPath, folderPath) {
   let version = null;
   let directorySizeMB = null;
   let serverStatus = null;
+  let playerCount = null;
 
   try {
       memoryUsage = await getMemoryUsage(serverProcess);
@@ -181,13 +182,20 @@ async function getInfo(serverProcess, jarPath, folderPath) {
       console.warn('Failed to get server status:', err.message);
   }
 
+  try {
+    playerCount = await propertiesService.getOnlinePlayers();    
+  } catch (err) {
+      console.warn('Failed to get player count:', err.message);
+  }
+
   return {
       memoryUsage,
       platform,
       version,
       directorySizeMB,
       uptime: uptime.uptime,
-      status: serverStatus
+      status: serverStatus,
+      playerCount: playerCount
   };
 }
 
