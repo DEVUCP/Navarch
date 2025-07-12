@@ -22,10 +22,10 @@ async function startServer(api_port, mc_port) {
         configUtils.generateConfigFile();
         console.log("sever-config generated successfully")
     }
-    const ip = await networkingUtils.getIP(local=true)
-    console.log("local-ip:", ip);
-
+    
     if(debug === false){
+        const ip = await networkingUtils.getIP(local=true)
+        console.log("local-ip:", ip);
 
         await networkingUtils.forwardPort(api_port, ip);
         await networkingUtils.forwardPort(3000, ip); // port forwarding for frontend
