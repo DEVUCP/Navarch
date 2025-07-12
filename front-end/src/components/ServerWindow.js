@@ -7,6 +7,7 @@ import VersionSelectDropdown from './VersionSelectDropdown';
 import StartStopBtn from './StartStopBtn';
 import Console from './Console';
 import InfoTab from './InfoTab';
+import PropertiesTab from './PropertiesTab';
 
 import Tabs from './Tabs/Tabs';
 import TabPanel from './Tabs/TabPanel';
@@ -16,7 +17,7 @@ function ServerWindow() {
   return (
     <ServerDataProvider>
       <div className={styles.container}>
-        <div className={styles.subContainer2}>
+        <div className={styles.subContainer}>
           <div className={styles.actionsScreen}>
             <Tabs labels={[
               { value: "info-tab", label: "Info" },
@@ -27,7 +28,7 @@ function ServerWindow() {
                 <InfoTab />
               </TabPanel>
               <TabPanel value="properties-tab">
-                properties tab placeholder
+                <PropertiesTab />
               </TabPanel>
               <TabPanel value="version-tab">
                 version tab placeholder

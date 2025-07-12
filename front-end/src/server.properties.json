@@ -1,0 +1,249 @@
+
+{
+  "server-properties": {
+    "accepts-transfers": {
+      "default": false,
+      "description": "Controls whether server accepts player transfers"
+    },
+    "allow-flight": {
+      "default": false,
+      "description": "Allows players to fly in survival mode if set to true"
+    },
+    "allow-nether": {
+      "default": true,
+      "description": "Allows players to travel to the Nether"
+    },
+    "broadcast-console-to-ops": {
+      "default": true,
+      "description": "Send console output to all online operators"
+    },
+    "broadcast-rcon-to-ops": {
+      "default": true,
+      "description": "Send RCON output to all online operators"
+    },
+    "bug-report-link": {
+      "default": "",
+      "description": "Link for submitting bug reports"
+    },
+    "difficulty": {
+      "default": "easy",
+      "description": "Sets game difficulty (easy/normal/hard/peaceful)"
+    },
+    "enable-command-block": {
+      "default": false,
+      "description": "Enables command blocks"
+    },
+    "enable-jmx-monitoring": {
+      "default": false,
+      "description": "Enables JMX monitoring"
+    },
+    "enable-query": {
+      "default": false,
+      "description": "Enables GameSpy4 protocol server listener"
+    },
+    "enable-rcon": {
+      "default": false,
+      "description": "Enables remote access to server console"
+    },
+    "enable-status": {
+      "default": true,
+      "description": "Makes server appear in server list"
+    },
+    "enforce-secure-profile": {
+      "default": true,
+      "description": "Enforces secure profile settings"
+    },
+    "enforce-whitelist": {
+      "default": false,
+      "description": "Enforces whitelist on the server"
+    },
+    "entity-broadcast-range-percentage": {
+      "default": 100,
+      "description": "Controls how far entities are broadcast to players"
+    },
+    "force-gamemode": {
+      "default": false,
+      "description": "Forces players to join in the default game mode"
+    },
+    "function-permission-level": {
+      "default": 2,
+      "description": "Permission level for function commands"
+    },
+    "gamemode": {
+      "default": "survival",
+      "description": "Default game mode for new players"
+    },
+    "generate-structures": {
+      "default": true,
+      "description": "Defines whether structures generate in world"
+    },
+    "generator-settings": {
+      "default": "{}",
+      "description": "Settings used to customize world generation"
+    },
+    "hardcore": {
+      "default": false,
+      "description": "If true, players are banned upon death"
+    },
+    "hide-online-players": {
+      "default": false,
+      "description": "Hides online players in server status"
+    },
+    "initial-disabled-packs": {
+      "default": "",
+      "description": "Data packs disabled by default"
+    },
+    "initial-enabled-packs": {
+      "default": "vanilla",
+      "description": "Data packs enabled by default"
+    },
+    "level-name": {
+      "default": "world",
+      "description": "The name of the world"
+    },
+    "level-seed": {
+      "default": "",
+      "description": "Seed for world generation"
+    },
+    "level-type": {
+      "default": "minecraft:normal",
+      "description": "Defines the type of world to generate"
+    },
+    "log-ips": {
+      "default": true,
+      "description": "Log player IP addresses"
+    },
+    "max-chained-neighbor-updates": {
+      "default": 1000000,
+      "description": "Maximum number of chained neighbor updates"
+    },
+    "max-players": {
+      "default": 20,
+      "description": "Maximum number of players allowed"
+    },
+    "max-tick-time": {
+      "default": 60000,
+      "description": "Maximum milliseconds per tick before server timeout"
+    },
+    "max-world-size": {
+      "default": 29999984,
+      "description": "Maximum world size in blocks"
+    },
+    "motd": {
+      "default": "A Minecraft Server",
+      "description": "Message displayed in server list"
+    },
+    "network-compression-threshold": {
+      "default": 256,
+      "description": "Limits network compression threshold in bytes"
+    },
+    "online-mode": {
+      "default": true,
+      "description": "Requires players to be authenticated with Minecraft account"
+    },
+    "op-permission-level": {
+      "default": 4,
+      "description": "Sets permission level for operators"
+    },
+    "pause-when-empty-seconds": {
+      "default": 60,
+      "description": "Time in seconds before pausing empty server"
+    },
+    "player-idle-timeout": {
+      "default": 0,
+      "description": "Time in minutes before idle players are kicked"
+    },
+    "prevent-proxy-connections": {
+      "default": false,
+      "description": "Prevents connections through proxies"
+    },
+    "pvp": {
+      "default": true,
+      "description": "Enables player vs player combat"
+    },
+    "query.port": {
+      "default": 25565,
+      "description": "Port for GameSpy4 protocol server listener"
+    },
+    "rate-limit": {
+      "default": 0,
+      "description": "Sets the rate limit for connections"
+    },
+    "rcon.password": {
+      "default": "",
+      "description": "Password for RCON"
+    },
+    "rcon.port": {
+      "default": 25575,
+      "description": "Port for RCON"
+    },
+    "region-file-compression": {
+      "default": "deflate",
+      "description": "Compression type for region files"
+    },
+    "require-resource-pack": {
+      "default": false,
+      "description": "Forces clients to use server resource pack"
+    },
+    "resource-pack": {
+      "default": "",
+      "description": "URL to resource pack"
+    },
+    "resource-pack-id": {
+      "default": "",
+      "description": "Unique identifier for resource pack"
+    },
+    "resource-pack-prompt": {
+      "default": "",
+      "description": "Message shown when resource pack is offered"
+    },
+    "resource-pack-sha1": {
+      "default": "",
+      "description": "SHA1 hash of resource pack"
+    },
+    "server-ip": {
+      "default": "",
+      "description": "IP address to bind server to"
+    },
+    "server-port": {
+      "default": 25565,
+      "description": "Port the server listens on"
+    },
+    "simulation-distance": {
+      "default": 10,
+      "description": "Maximum simulation distance in chunks"
+    },
+    "spawn-monsters": {
+      "default": true,
+      "description": "Determines if monsters can spawn"
+    },
+    "spawn-protection": {
+      "default": 16,
+      "description": "Radius of spawn area protection"
+    },
+    "sync-chunk-writes": {
+      "default": true,
+      "description": "Enables synchronous chunk writes"
+    },
+    "text-filtering-config": {
+      "default": "",
+      "description": "Configuration for text filtering"
+    },
+    "text-filtering-version": {
+      "default": 0,
+      "description": "Version of text filtering to use"
+    },
+    "use-native-transport": {
+      "default": true,
+      "description": "Uses native transport if available"
+    },
+    "view-distance": {
+      "default": 10,
+      "description": "Maximum view distance in chunks"
+    },
+    "white-list": {
+      "default": false,
+      "description": "Enables server whitelist"
+    }
+  }
+}
