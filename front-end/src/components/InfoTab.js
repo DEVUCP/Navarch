@@ -43,7 +43,7 @@ const InfoTab = () => {
             />
             <CardItem 
               label="Players Online"
-              value={`${data?.players?.length ?? 0}/${data?.max_players ?? "?"}`}
+              value={`${data?.playerCount ?? 0}/${data?.max_players ?? "?"}`}
             />
             <CardItem 
               label="Server Version"
