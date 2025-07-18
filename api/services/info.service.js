@@ -4,6 +4,7 @@ const pidusage = require('pidusage')
 const AdmZip = require('adm-zip');
 const consts = require('../consts');
 const serverService = require("./server.service");
+const propertiesService = require("./properties.service");
 
 let startTime = null;
 
