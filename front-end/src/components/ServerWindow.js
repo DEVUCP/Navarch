@@ -7,6 +7,7 @@ import VersionSelectDropdown from './VersionSelectDropdown';
 import StartStopBtn from './StartStopBtn';
 import Console from './Console';
 import InfoTab from './InfoTab';
+import VersionTab from './VersionTab';
 import PropertiesTab from './PropertiesTab';
 
 import Tabs from './Tabs/Tabs';
@@ -31,7 +32,7 @@ function ServerWindow() {
                 <PropertiesTab />
               </TabPanel>
               <TabPanel value="version-tab">
-                version tab placeholder
+                <VersionTab />
               </TabPanel>
             </Tabs>
           </div>
@@ -40,7 +41,7 @@ function ServerWindow() {
         <div className={styles.subContainer}>
           <Console />
           <StartStopBtn />
-          <button 
+          {/* <button 
             className="btn btn-danger" 
             onClick={() => {
               localStorage.clear();
@@ -51,7 +52,7 @@ function ServerWindow() {
             title="Clears all saved data and reloads the page"
           >
             Reset
-          </button>
+          </button> */}
         </div>
       </div>
     </ServerDataProvider>
