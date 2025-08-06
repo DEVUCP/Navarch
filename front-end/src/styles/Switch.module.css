@@ -52,3 +52,19 @@ input:checked + .slider:before {
   color: #4CAF50;
   transform: translateX(26px);
 }
+
+/* Disabled/null state styles */
+.switch.disabled .slider {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.switch.disabled .slider:before {
+  content: "—";
+  color: #888888;
+  transform: translateX(13px); /* Center the slider */
+}
+
+.switch.disabled .slider:hover {
+  background-color: #cccccc; /* Prevent hover effects */
+}

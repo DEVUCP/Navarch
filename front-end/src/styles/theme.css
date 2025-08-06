@@ -8,6 +8,10 @@
     --element: #8BB174;
     --light-element: #B5CA8D;
     --text-color: #000000;
+    --code:#d63384;
+    --code-bg: #381e2b;
+    --code-bg-light:#61384d;
+    --code-accent: #8b4e6d;
 }
 
 [data-theme='dark'] {

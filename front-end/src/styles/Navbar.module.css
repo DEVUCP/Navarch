@@ -1,0 +1,61 @@
+.navbar {
+  background-color: rgb(36, 36, 36);
+  width: 100%;
+  position: absolute;
+  top: 0;
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.shareButton {
+  background-color: transparent;
+  border: 1px solid #f8f9fa; /* A light color, similar to bootstrap's 'light' */
+  color: #f8f9fa;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
+  font-family: inherit; /* Ensure button inherits font */
+}
+
+.shareButton:hover {
+  color: #212529; /* A dark color for text on hover */
+  background-color: #f8f9fa;
+  border-color: #f8f9fa;
+}
+
+.shareButton:focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(248, 249, 250, 0.5);
+}
+
+.ipDisplay {
+  color: #f8f9fa;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+  display: flex;
+  align-items: center;
+  font-family: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ipDisplay:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.ipDisplay code {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.2rem;
+  margin-left: 0.5rem;
+}

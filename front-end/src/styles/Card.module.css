@@ -1,7 +1,7 @@
 
 .card {
 
-  background: var(--light-secondary);
+  background: var(--code-bg-light);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -11,7 +11,7 @@
 .cardTitle {
   font-size: 1.5rem;
   margin-bottom: 15px;
-  color: #ffffff;
+  color: #333;
 }
 
 .cardContent {
@@ -37,16 +37,17 @@
 
 .cardLabel {
   font-weight: 500;
-  color: #333;
+  color: #0c0c0c;
 }
 
 .cardValue {
-  color: #ffffff;
+  color: var(--code-bg);
 }
 
 .cardGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  color: #0c0c0c;
   gap: 20px;
   width: 100%;
 }
