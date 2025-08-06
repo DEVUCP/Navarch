@@ -1,24 +1,63 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.min.js';
+import React from 'react';
+import styles from '../styles/Navbar.module.css';
+import { useServerData } from '../utils/serverDataContext';
 
 function Navbar(){
 
+  const data = useServerData() || {}
+
+  const handleShareClick = () => {
+    const ip = localStorage.getItem('ipAddress');
+    const port = localStorage.getItem('port');
+
+    if (ip && port) {
+      const baseUrl = window.location.origin + window.location.pathname;
+      const shareUrl = `${baseUrl}?ip=${ip}&port=${port}`;
+      navigator.clipboard.writeText(shareUrl)
+        .then(() => {
+          alert("Share link copied to clipboard!");
+        })
+        .catch(err => {
+          console.error('Failed to copy share link: ', err);
+          alert("Failed to copy share link.");
+        });
+    } else {
+      alert("Could not generate share link. IP and/or Port not found in local storage.");
+    }
+  };
+
+  const handleIpCopyClick = () => {
+    const ip = localStorage.getItem('ipAddress');
+    const port = data?.server_port;
+
+    if (ip && port) {
+      const serverAddress = `${ip}:${port}`;
+      navigator.clipboard.writeText(serverAddress)
+        .then(() => {
+          alert(`Copied "${serverAddress}" to clipboard!`);
+        })
+        .catch(err => {
+          console.error('Failed to copy IP address: ', err);
+          alert("Failed to copy IP address.");
+        });
+    }
+  };
+
+  const serverIp = localStorage.getItem('ipAddress');
+  const serverPort = data?.server_port;
+
 return(
-    <nav class="navbar" style={{ backgroundColor: 'rgb(36, 36, 36)', width: '100%', position:"absolute",top:'0'}}>
-    <div class="container-fluid" style={{display:"flex",justifyContent:"center"}}>
-      <a 
-      className="navbar-brand" 
-      href="#" 
-      style={{color:"white"}}
-      onClick={(e) => {
-        e.preventDefault();
-        navigator.clipboard.writeText("192.168.1.102:25565");
-        alert("Copied to clipboard")
-      }}>
-        IP: 192.168.1.102:25565
-        </a>
-    </div>
-  </nav>
+    <nav className={styles.navbar}>
+      <button className={styles.shareButton} onClick={handleShareClick}>
+        Share Dashboard
+      </button>
+      {serverIp && serverPort && (
+        <div className={styles.ipDisplay} onClick={handleIpCopyClick} title="Click to copy IP Address">
+          <span>Minecraft IP: </span>
+          <code>{serverIp}:{serverPort}</code>
+        </div>
+      )}
+    </nav>
 );
 }
 
