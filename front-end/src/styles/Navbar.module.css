@@ -13,7 +13,7 @@
 
 .shareButton {
   background-color: transparent;
-  border: 1px solid #f8f9fa; /* A light color, similar to bootstrap's 'light' */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* A light color, similar to bootstrap's 'light' */
   color: #f8f9fa;
   padding: 0.375rem 0.75rem;
   font-size: 1rem;
