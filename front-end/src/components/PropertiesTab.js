@@ -25,9 +25,8 @@ const Property = ({ name, description, value, onChange, type, disabled }) => {
             <span className={styles.propertyName}>{name}</span>
           </div>
           <Switch 
-            checked={localValue === "true"}
+            checked={localValue === "true" ? true : localValue === "false" ? false : null}
             onChange={(checked) => handleChange(checked.toString())}
-            disabled={disabled}
           />
         </div>
             <span className={styles.propertyDescription}>{description}</span>
@@ -35,7 +34,7 @@ const Property = ({ name, description, value, onChange, type, disabled }) => {
     )
   }
 
-  if (type === 'dropdown') {
+  if (type === 'difficulty') {
     return (
       <div className={styles.property} style={{ cursor: disabled ? 'wait' : 'default' }}>
         <div className={styles.propertyHeader}>
@@ -52,6 +51,30 @@ const Property = ({ name, description, value, onChange, type, disabled }) => {
             <option value="easy">Easy</option>
             <option value="normal">Normal</option>
             <option value="hard">Hard</option>
+          </select>
+        </div>
+        <span className={styles.propertyDescription}>{description}</span>
+      </div>
+    )
+  }
+
+  if (type === 'gamemode') {
+    return (
+      <div className={styles.property} style={{ cursor: disabled ? 'wait' : 'default' }}>
+        <div className={styles.propertyHeader}>
+          <div className={styles.propertyNameContainer}>
+            <span className={styles.propertyName}>{name}</span>
+          </div>
+          <select 
+            className={styles.select}
+            value={localValue || "survival"}
+            onChange={(e) => handleChange(e.target.value)}
+            disabled={disabled}
+          >
+            <option value="survival">Survival</option>
+            <option value="adventure">Adventure</option>
+            <option value="creative">Creative</option>
+            <option value="spectator">Spectator</option>
           </select>
         </div>
         <span className={styles.propertyDescription}>{description}</span>
@@ -138,8 +161,9 @@ const PropertiesTab = () => {
   ]
 
   const getPropertyType = (key) => {
-    if (key === 'difficulty') return 'dropdown'
-    if (key === 'max-players' || key === 'view-distance' || key === 'spawn-protection') return 'number'
+    if (key === 'gamemode') return 'gamemode'
+    if (key === 'difficulty') return 'difficulty'
+    if (key === 'max-players' || key === 'view-distance' || key === 'spawn-protection' || key === 'server-port') return 'number'
     if (key === 'motd' || key === 'level-name' || key === 'level-seed' || key === 'resource-pack' || key === 'resource-pack-sha1') return 'text'
     return 'boolean'
   }
