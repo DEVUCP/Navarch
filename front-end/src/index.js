@@ -47,7 +47,6 @@ const IpForm = () => {
       if(ipAddress === 'localhost') {
         const publicIp = await fetch('https://ifconfig.me/ip')
         const result = await checkURL(publicIp, port);
-        alert(result)
         if(result === 200)
           ipAddress = publicIp;
       }

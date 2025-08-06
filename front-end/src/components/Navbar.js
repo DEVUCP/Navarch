@@ -11,8 +11,9 @@ function Navbar(){
     const port = localStorage.getItem('port');
 
     if (ip && port) {
-      const baseUrl = window.location.origin + window.location.pathname;
-      const shareUrl = `${baseUrl}?ip=${ip}&port=${port}`;
+      let baseUrl = window.location.origin + window.location.pathname;
+      const frontendPort = baseUrl.split(':')[2]
+      const shareUrl = `http://${ip}:${frontendPort}?ip=${ip}&port=${port}`;
       navigator.clipboard.writeText(shareUrl)
         .then(() => {
           alert("Share link copied to clipboard!");
