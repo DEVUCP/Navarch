@@ -7,8 +7,11 @@ const {
     getMemoryUsage,
     getWorldSize,
     getVersion,
-    getPlatform
+    getPlatform,
+    getAllInfo
 } = require('../controllers/info.controller');
+
+router.get('/', getAllInfo);
 
 router.get('/player-count', playerCount);
 

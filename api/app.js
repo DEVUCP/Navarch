@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { limiter } = require('./middleware/limiter.middleware');
+const logger = require('./middleware/logger.middleware');
 
 const app = express();
 
@@ -12,6 +13,7 @@ const infoRoutes = require('./routes/info.routes');
 
 app.use(cors());
 app.use(limiter)
+app.use(logger);
 app.use(express.json());
 
 app.use('/server', serverRoutes);

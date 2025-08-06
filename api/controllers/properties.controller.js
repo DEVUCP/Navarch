@@ -6,12 +6,12 @@ const { Sema } = require('async-sema');
 
 let togglePropertySema = new Sema(1);
 
-async function toggleProperty(req, res) {
+async function updateProperty(req, res) {
     togglePropertySema.acquire();
 
     try {
         console.log(req.params.property);
-        await propertiesService.updateProperty(req.params.property, true);
+        await propertiesService.updateProperty(req.params.property, req.params.newvalue);
         res.status(200).send("done");
     } catch(error) {
         console.error(error);
@@ -151,7 +151,7 @@ async function modifyBannedIPs(req, res) {
 
 
 module.exports = {
-    toggleProperty,
+    updateProperty,
     allocateRam,
     serverConfig,
     getWhitelist,

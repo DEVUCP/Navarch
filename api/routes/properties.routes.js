@@ -3,7 +3,7 @@ const router = express.Router();
 const propertiesServices = require('../services/properties.service');
 
 const { 
-    toggleProperty,
+    updateProperty,
     allocateRam,
     serverConfig,
     getWhitelist,
@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
     }
 })
 
-router.put('/toggle/:property', toggleProperty);
+router.put('/update/:property/:newvalue', updateProperty);
 
 router.put('/allocate-ram/:mb', allocateRam);
 

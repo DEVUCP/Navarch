@@ -1,0 +1,41 @@
+.tabsContainer {
+  width: 100%;
+}
+
+.tabHeader {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.tabButton {
+  background: none;
+  border: none;
+  font-size: 16px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+.tabButton:hover {
+  color: #d63384;
+}
+
+.tabButtonActive {
+  border-color: #d63384;
+  font-weight: bold;
+}
+
+.tabPanels {
+  padding: 10px;
+}
+
+.tabPanel {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

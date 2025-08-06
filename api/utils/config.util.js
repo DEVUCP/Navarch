@@ -4,7 +4,7 @@ const { configFilePath } = require("../consts");
 
 const defaultConfig =  {
     "os": os.type(),
-    "memory": "1024M",
+    "memory": "1024",
     "platform": "vanilla",
     "version": "1.21.4",
     "start_with_script": false,

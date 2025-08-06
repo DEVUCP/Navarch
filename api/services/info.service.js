@@ -2,6 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const pidusage = require('pidusage')
 const AdmZip = require('adm-zip');
+const consts = require('../consts');
+const serverService = require("./server.service");
+const propertiesService = require("./properties.service");
 
 let startTime = null;
 
@@ -56,12 +59,10 @@ function getDirectorySize(folderPath) {
     return sizeInMB;
   }
 
-function getPlatform(jarPath) {
+function getPlatform(jarPath = consts.serverDirectory + "/" + consts.serverName) {
   const zip = new AdmZip(jarPath);
   const entries = zip.getEntries();
   const names = entries.map(e => e.entryName);
-
-  console.log(names);
 
   const has = (file) => names.includes(file);
 
@@ -88,19 +89,20 @@ function getPlatform(jarPath) {
 }
   
 function getVersion(jarPath) {
-  if (getPlatform(jarPath) == "Fabric") {
-    console.error("Unable to get version from fabric servers");
-    return "Unable to fetch version";
-  }
-
+  
   const zip = new AdmZip(jarPath);
   const entries = zip.getEntries();
-
+  
+  if (getPlatform(jarPath) == "Fabric") {
+    const installEntry = entries.find(entry => entry.entryName === 'install.properties');
+    const text = zip.readAsText(installEntry);
+    return text.split("game-version=")[1];
+  }
+    
   const versionEntry = entries.find(e => e.entryName === "version.json");
   if (versionEntry) {
       try {
           const content = JSON.parse(zip.readAsText(versionEntry));
-          console.log(content);
           return content.name || content.id || null;
       } catch (err) {
           console.warn("Failed to parse version.json:", err.message);
@@ -117,6 +119,86 @@ function getVersion(jarPath) {
   return null;
 }
 
+async function getUpTime() {
+  if (getStartTime() === null) 
+      return { uptime: "0s" };
+  
+  const ms = Date.now() - getStartTime();
+
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  let formatted = [];
+  if (hours > 0) formatted.push(`${hours}h`);
+  if (minutes > 0 || hours > 0) formatted.push(`${minutes}m`);
+  formatted.push(`${seconds}s`);
+
+  return { uptime: formatted.join(" ") };
+}
+
+async function getInfo(serverProcess, jarPath, folderPath) {
+  let memoryUsage = null;
+  let platform = null;
+  let version = null;
+  let directorySizeMB = null;
+  let serverStatus = null;
+  let playerCount = null;
+
+  try {
+      memoryUsage = await getMemoryUsage(serverProcess);
+  } catch (err) {
+      console.warn('Failed to get memory usage:', err.message);
+  }
+
+  try {
+      platform = getPlatform(jarPath);
+  } catch (err) {
+      console.warn('Failed to get platform:', err.message);
+  }
+
+  try {
+      version = getVersion(jarPath);
+  } catch (err) {
+      console.warn('Failed to get version:', err.message);
+  }
+
+  try {
+      directorySizeMB = getDirectorySize(folderPath);
+      directorySizeMB = Math.round(directorySizeMB * 100) / 100;
+  } catch (err) {
+      console.warn('Failed to get directory size:', err.message);
+  }
+
+  try {
+      uptime = await getUpTime();
+  } catch (err) {
+      console.warn('Failed to calculate uptime:', err.message);
+  }
+
+  try {
+      serverStatus = serverService.isServerStarting();
+  } catch (err) {
+      console.warn('Failed to get server status:', err.message);
+  }
+
+  try {
+    playerCount = await propertiesService.getOnlinePlayers();    
+  } catch (err) {
+      console.warn('Failed to get player count:', err.message);
+  }
+
+  return {
+      memoryUsage,
+      platform,
+      version,
+      directorySizeMB,
+      uptime: uptime.uptime,
+      status: serverStatus,
+      playerCount: playerCount
+  };
+}
 
 module.exports = {
     startCounting,
@@ -125,5 +207,7 @@ module.exports = {
     getMemoryUsage,
     getDirectorySize,
     getPlatform,
-    getVersion
+    getVersion,
+    getInfo,
+    getUpTime
 }

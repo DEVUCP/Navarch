@@ -1,0 +1,62 @@
+
+.card {
+
+  background: var(--code-bg-light);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.cardContent {
+  width: 100%;
+}
+
+.cardContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px;
+  overflow-y: auto;
+
+}
+
+.cardItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--secondary);
+}
+
+.cardLabel {
+  font-weight: 500;
+  color: #0c0c0c;
+}
+
+.cardValue {
+  color: var(--code-bg);
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  color: #0c0c0c;
+  gap: 20px;
+  width: 100%;
+}
+
+.truncatedText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px; /* or whatever fits your layout */
+  display: inline-block;
+  vertical-align: bottom;
+}

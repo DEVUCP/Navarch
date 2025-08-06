@@ -1,5 +1,5 @@
 .viewbox{
-    background-color: var(--secondary);
+    background-color: var(--code-bg);
 
     width: 100%;
     padding-top: 1em;
@@ -17,7 +17,7 @@
         
 }
 .consoleTextBox{
-    background-color: var(--secondary);
+    background-color: var(--code-bg);
 
     width: 100%;
     padding-left: 1em;
@@ -35,14 +35,14 @@
 
 .consoleInputField{
   
-  background-color: var(--light-secondary);
+  background-color: var(--code-bg-light);
   padding: 0.25em 0.25em 0.25em 0.25em;
   border-radius: 1em;
   width: 95%;
   color: white;
 }
 .consoleInputButton{
-    background-color: var(--light-secondary);
+    background-color: var(--code-bg-light);
     padding: 0.25em 0.25em 0.25em 0.25em;
     border-radius: 1em;
     color: black;

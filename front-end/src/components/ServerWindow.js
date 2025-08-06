@@ -6,51 +6,57 @@ import { useState } from "react";
 import VersionSelectDropdown from './VersionSelectDropdown';
 import StartStopBtn from './StartStopBtn';
 import Console from './Console';
-import TabButtons from './TabButtons';
+import InfoTab from './InfoTab';
+import VersionTab from './VersionTab';
+import PropertiesTab from './PropertiesTab';
 
-function ServerWindow(){
+import Tabs from './Tabs/Tabs';
+import TabPanel from './Tabs/TabPanel';
+import { ServerDataProvider } from '../utils/serverDataContext';
 
-  const [tabOption, setTabOption] = useState("info-tab")
-
-  return(
-    <div className={styles.container}>
-{/* 
-      <div className={styles.subContainer}>
-        <TabButtons taboption={setTabOption}></TabButtons>
+function ServerWindow() {
+  return (
+    <ServerDataProvider>
+      <div className={styles.container}>
         <div className={styles.subContainer}>
-          <div className={tabOption !== "info-tab" ? styles.hidden : styles.tabPage}>
-            info tab placeholder
-          </div>
-          <div className={tabOption !== "properties-tab" ? styles.hidden : styles.tabPage}>
-            properties tab placeholder
-          </div>
-          <div className={tabOption !== "version-tab" ? styles.hidden : styles.tabPage}>
-            version tab placeholder
+          <div className={styles.actionsScreen}>
+            <Tabs labels={[
+              { value: "info-tab", label: "Info" },
+              { value: "properties-tab", label: "Properties" },
+              { value: "version-tab", label: "Version" }
+            ]}>
+              <TabPanel value="info-tab">
+                <InfoTab />
+              </TabPanel>
+              <TabPanel value="properties-tab">
+                <PropertiesTab />
+              </TabPanel>
+              <TabPanel value="version-tab">
+                <VersionTab />
+              </TabPanel>
+            </Tabs>
           </div>
         </div>
-      </div> */}
 
-
-      <div className={styles.subContainer}>
-        <Console></Console>
-        <StartStopBtn></StartStopBtn>
-                <button 
-                  className="btn btn-danger" 
-                  onClick={() => {
-                    localStorage.clear();
-                    window.location.reload();
-                  }}
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  title="Clears all saved data and reloads the page"
-                >
-                  Reset
-                </button>
-        {/* <VersionSelectDropdown></VersionSelectDropdown> */}
+        <div className={styles.subContainer}>
+          <Console />
+          <StartStopBtn />
+          {/* <button 
+            className="btn btn-danger" 
+            onClick={() => {
+              localStorage.clear();
+              window.location.reload();
+            }}
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            title="Clears all saved data and reloads the page"
+          >
+            Reset
+          </button> */}
+        </div>
       </div>
-    </div>
+    </ServerDataProvider>
   );
 }
-
 
 export default ServerWindow;

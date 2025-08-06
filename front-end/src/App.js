@@ -4,6 +4,8 @@ import 'bootstrap/dist/js/bootstrap.min.js';
 
 import Navbar from './components/Navbar';
 import ServerWindow from './components/ServerWindow';
+import { ServerDataProvider } from './utils/serverDataContext';
+
 
 function App() {
 
@@ -11,17 +13,9 @@ function App() {
 
   return (
     <div className="App" data-testid="testApp">
-      <Navbar></Navbar>
-      {/* <div className='sidebar-container'>
-        <div class="btn-group-horizontal" role="group" aria-label="Vertical radio toggle button group">
-        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio1" autocomplete="off"/>
-        <label class="btn btn-primary btn-lg" for="vbtn-radio1">Server</label>
-        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio2" autocomplete="off"/>
-        <label class="btn btn-primary btn-lg" for="vbtn-radio2">Properties</label>
-        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio3" autocomplete="off"/>
-        <label class="btn btn-primary btn-lg" for="vbtn-radio3">Software/version</label>
-        </div>
-      </div> */}
+      <ServerDataProvider>
+        <Navbar></Navbar>
+      </ServerDataProvider>
       <ServerWindow></ServerWindow>
 
     </div>
