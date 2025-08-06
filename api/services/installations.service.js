@@ -11,6 +11,7 @@ const preserveList = [
     "world_the_end",
     "banned-ips.json",
     "banned-players.json",
+    "server.properties",
     "ops.json",
     "whitelist.json"
 ];
