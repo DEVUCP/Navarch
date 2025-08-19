@@ -10,6 +10,7 @@ const serverRoutes = require('./routes/server.routes');
 const propertiesRoute = require('./routes/properties.routes');
 const installationsRoutes = require('./routes/installations.routes');
 const infoRoutes = require('./routes/info.routes');
+const uploadpluginRoute = require('./routes/upload.routes');
 
 app.use(cors());
 app.use(limiter)
@@ -21,6 +22,7 @@ app.use('/installations', installationsRoutes);
 app.use('/properties', propertiesRoute);
 app.use('/info', infoRoutes);
 app.use('/admin', adminRoutes);
+app.use('/upload-plugin', uploadpluginRoute);
 
 app.get('/ping', async (req, res) => {
     res.send(`pong`);
